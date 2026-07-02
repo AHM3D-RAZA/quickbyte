@@ -1,9 +1,15 @@
 import React from "react";
-import HeroBanner from "../../components/common/HeroBanner";
-import PartnerRideSection from "../../components/common/PartnerRideSection";
-import DealCard from "../../components/menu/dealCard";
 
-// Replace these with the actual image paths/imports you're providing.
+import DownloadBanner from "../../components/home/DownloadBanner";
+import GetStarted from "../../components/home/GetStarted";
+import DealsGrid from "../../components/menu/DealsGrid";
+import CategoryGrid from "../../components/menu/CategoryGrid";
+import RestaurantGrid from "../../components/menu/RestaurantGrid";
+import Navbar from "/src/components/layout/Navbar";
+import HeroBanner from "/src/components/home/HeroBanner";
+import AboutUs from "/src/components/home/AboutUs";
+import Footer from "/src/components/layout/Footer";
+
 import chef from "/src/assets/chef.png";
 import logo from "/src/assets/logo-1.png";
 import couple from "/src/assets/couple.png";
@@ -11,32 +17,30 @@ import badges from "/src/assets/store-badges.png";
 import rider from "/src/assets/rider.png";
 
 export default function Home() {
-  const handlePartnerClick = () => {
-    // e.g. navigate("/partner-signup")
-    console.log("Partner CTA clicked");
-  };
-
-  const handleRiderClick = () => {
-    // e.g. navigate("/rider-signup")
-    console.log("Rider CTA clicked");
-  };
+  const handlePartnerClick = () => console.log("Partner CTA clicked");
+  const handleRiderClick = () => console.log("Rider CTA clicked");
 
   return (
     <>
-      <div>
-        <DealCard image="/src/assets/deal1.png" name="Deal 1" restaurantLabel="Restaurant A" discount="20% Off" />
-      </div>
+      <Navbar /> 
+      <HeroBanner />
+
+      <DealsGrid />
+      <CategoryGrid />
+      <RestaurantGrid />
 
       <div className="mx-auto max-w-6xl space-y-6 p-6">
-        <HeroBanner imageLogo={logo} imageSrc={couple} appBadgesSrc={badges} />
-
-        <PartnerRideSection
+        <DownloadBanner imageLogo={logo} imageSrc={couple} appBadgesSrc={badges} />
+        <GetStarted
           partnerImage={chef}
           riderImage={rider}
           onPartnerClick={handlePartnerClick}
           onRiderClick={handleRiderClick}
         />
       </div>
-    </>
+
+      <AboutUs />
+      <Footer />
+  </>
   );
 }

@@ -48,7 +48,7 @@ function PromoCard({
  *  - riderImage (string, required): background image for the "Ride with us" card.
  *  - onPartnerClick, onRiderClick (optional callbacks for the two CTA buttons)
  */
-export default function PartnerRideSection({
+export default function GetStarted({
   partnerImage,
   riderImage,
   onPartnerClick,

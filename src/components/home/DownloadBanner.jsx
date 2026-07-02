@@ -11,7 +11,7 @@ import React from "react";
  *  - storeHref (string, optional): since both badges are one image, this
  *    single link wraps the whole graphic (defaults to "#").
  */
-export default function HeroBanner({
+export default function DownloadBanner({
   imageSrc,
   imageAlt = "Couple ordering on their phones",
   imageLogo,
