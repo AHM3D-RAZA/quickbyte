@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTheme } from "/src/context/ThemeContext";
 
 const categories = [
   "Offers", "Burgers", "Fries", "Snacks", "Salads",
@@ -6,8 +7,13 @@ const categories = [
 ];
 
 function OfferCategoryTabs({ activeCategory, onSelect }) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   return (
-    <div className="flex items-center justify-between gap-x-4 gap-y-2 px-6 py-4 font-poppins bg-[#f3f3f3]">
+    <div className={`flex items-center justify-between gap-x-4 gap-y-2 px-6 py-4 font-poppins ${
+                isDark ? "bg-brand-orange" : "bg-[#f3f3f3]"
+              }`}>
       {categories.map((cat) => (
         <button
           key={cat}
