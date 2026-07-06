@@ -12,7 +12,7 @@ function OfferCard({ image, restaurantLabel, title, discount, onAdd, onSelect })
         className="absolute inset-0"
         style={{
           backgroundImage:
-            'linear-gradient(235deg, rgba(255,255,255,0) 1%, rgba(3,8,31,0.19) 52%, rgba(3,8,31,0.89) 88%)',
+            "linear-gradient(235deg, rgba(255,255,255,0) 1%, rgba(3,8,31,0.19) 52%, rgba(3,8,31,0.89) 88%)",
         }}
       />
 
@@ -21,20 +21,29 @@ function OfferCard({ image, restaurantLabel, title, discount, onAdd, onSelect })
       </div>
 
       <div className="absolute left-4 md:left-6 bottom-4 md:bottom-6 max-w-[70%]">
-        <p className="text-[#fc8a06] font-medium text-sm md:text-lg">{restaurantLabel}</p>
+        <p className="text-[#fc8a06] font-medium text-sm md:text-lg">
+          {restaurantLabel}
+        </p>
         <p className="text-white font-bold text-xl md:text-3xl">{title}</p>
       </div>
 
       <span
         role="button"
         aria-label="Add offer"
-        onClick={(e) => { e.stopPropagation(); onAdd(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onAdd();
+        }}
         className="absolute bottom-0 right-0 bg-white/90 w-[75px] h-[68px] md:w-[97px] md:h-[89px]
                    rounded-tl-[35px] md:rounded-tl-[45px] rounded-br-xl
-                   flex items-end justify-end pb-3 pr-3 md:pb-4 md:pr-4
+                   flex items-center justify-center
                    cursor-pointer hover:bg-white transition-colors"
       >
-        <span className="text-xl md:text-2xl font-bold text-[#03081f]">+</span>
+        <div className="w-8.5 h-8.5 md:w-10 md:h-10 rounded-full bg-black flex items-center justify-center">
+          <span className="text-white text-3xl md:text-4xl font-bold leading-none">
+            +
+          </span>
+        </div>
       </span>
     </button>
   );
