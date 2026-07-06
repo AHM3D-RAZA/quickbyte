@@ -24,11 +24,12 @@ export default function Home() {
     <>
       <Navbar /> 
       <HeroBanner />
-
-      <DealsGrid />
-      <CategoryGrid />
-      <RestaurantGrid type="Popular" />
-
+      <div id="menu">
+        <DealsGrid />
+        <CategoryGrid />
+        <RestaurantGrid type="Popular" />
+      </div>
+      
       <div className="mx-auto max-w-6xl space-y-6 p-6">
         <DownloadBanner imageLogo={logo} imageSrc={couple} appBadgesSrc={badges} />
         <GetStarted
