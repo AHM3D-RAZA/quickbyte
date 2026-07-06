@@ -9,10 +9,10 @@ const restaurantsData = [
   { id: 6, image: "/src/assets/restaurant6.png", name: "Restaurant 3" },
 ];
 
-function RestaurantGrid() {
+function RestaurantGrid({ type }) {
   return (
     <section className="px-6 py-8">
-      <h2 className="text-2xl font-bold mb-4">Popular Restaurants</h2>
+      <h2 className="text-2xl font-bold mb-4">{type} Restaurants</h2>
       <div className="grid grid-cols-6 gap-5">
         {restaurantsData.map((r) => (
           <RestaurantCard key={r.id} {...r} />

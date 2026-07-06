@@ -27,7 +27,7 @@ export default function Home() {
 
       <DealsGrid />
       <CategoryGrid />
-      <RestaurantGrid />
+      <RestaurantGrid type="Popular" />
 
       <div className="mx-auto max-w-6xl space-y-6 p-6">
         <DownloadBanner imageLogo={logo} imageSrc={couple} appBadgesSrc={badges} />
