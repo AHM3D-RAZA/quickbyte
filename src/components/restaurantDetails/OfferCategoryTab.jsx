@@ -11,7 +11,20 @@ function OfferCategoryTabs({ activeCategory, onSelect }) {
   const isDark = theme === "dark";
 
   return (
-    <div className={`flex items-center justify-between gap-x-4 gap-y-2 px-6 py-4 font-poppins ${
+    <>
+    {/* Mobile: dropdown */}
+    <div className="lg:hidden flex justify-center items-center">
+        <select
+            value={activeCategory}
+            onChange={(e) => onSelect(categories[Number(e.target.value)])}
+            className="border border-orange-500 rounded-full px-4 py-4 text-sm font-medium text-black bg-white"
+          >
+            {categories.map((cat, index) => (
+              <option key={cat} value={index}>{cat}</option>
+            ))}
+          </select>
+    </div>
+    <div className={`hidden lg:flex items-center justify-between gap-x-4 gap-y-2 px-6 py-4 font-poppins ${
                 isDark ? "bg-brand-orange" : "bg-[#f3f3f3]"
               }`}>
       {categories.map((cat) => (
@@ -25,6 +38,7 @@ function OfferCategoryTabs({ activeCategory, onSelect }) {
         </button>
       ))}
     </div>
+    </>
   );
 }
 
