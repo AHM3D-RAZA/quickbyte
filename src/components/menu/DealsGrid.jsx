@@ -1,6 +1,7 @@
 // components/menu/DealsGrid.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DealCard from "./dealCard";
+import { getDeals } from "/src/api/restaurantAPI";
 
 const tabs = [
   "Vegan",
@@ -17,7 +18,26 @@ const deals = [
 
 function DealsGrid() {
   const [activeTab, setActiveTab] = useState(0);
+  const [deals, setDeals] = useState([]);
+  
+    useEffect(() => {
+  
+      const fetchDeals = async () => {
+          try {
+              const data = await getDeals();
+              // console.log(Array.isArray(data)); // true or false
+              console.log(data);
+              setDeals(data);
+          } catch (error) {
+              console.error(error);
+          }
+      };
+  
+      fetchDeals();
+    }, []);
 
+
+  console.log(deals);
   return (
     <section className="px-6 py-8">
       <div className="flex items-center">
@@ -56,14 +76,14 @@ function DealsGrid() {
       {/* Mobile: horizontal sliding row */}
       <div className="flex lg:hidden gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2">
         {deals.map((deal) => (
-          <DealCard key={deal.id} {...deal} compact />
+          <DealCard key={deal.id} image={`http://127.0.0.1:8000${deal.image}`} name={deal.name} restaurantLabel={deal.items?.[0]?.menu_item?.restaurant?.name || "Unknown Restaurant"} discount={deal.combo_price} compact />
         ))}
       </div>
 
       {/* Desktop: 3-column grid */}
       <div className="hidden lg:grid grid-cols-3 gap-5">
         {deals.map((deal) => (
-          <DealCard key={deal.id} {...deal} />
+          <DealCard key={deal.id} image={`http://127.0.0.1:8000${deal.image}`} name={deal.name} restaurantLabel={deal.items?.[0]?.menu_item?.restaurant?.name || "Unknown Restaurant"} discount={`\$${deal.combo_price}`} />
         ))}
       </div>
     </section>

@@ -12,18 +12,41 @@ export default function RestaurantDetail() {
   }, []);
 
   const handleAddToCard = (item) => {
-    const updatedCart = [...userCart, item];
+    // const updatedCart = [...userCart, item];
+    // setUserCart(updatedCart);
 
+      const existingItem = userCart.find((cartItem) => cartItem.id === item.id);
+      let updatedCart;
+
+    if (existingItem) {
+      updatedCart = userCart.map((cartItem) => {
+        if (cartItem.id === item.id) {
+          return {
+            ...cartItem,
+            quantity: cartItem.quantity + 1,
+          };
+        }
+        console.log("This is cart item", cartItem);
+        console.log(
+          "If Updated Cart When quantity is more than 1",
+          updatedCart,
+        );
+        return cartItem;
+      });
+    } else {
+      updatedCart = [...userCart, { ...item }];
+      console.log("else Updated Cart When the item is new", updatedCart);
+    }
+
+    localStorage.setItem("UserCart", JSON.stringify(updatedCart));
     setUserCart(updatedCart);
 
-    setTimeout(() => {
-      localStorage.setItem("UserCart", JSON.stringify(updatedCart));
-      window.alert("Cart Updated");
-    }, 3000);
+    window.alert("Cart Updated");
   };
 
   return (
-    <div className="mx-auto space-y-2 px-6 pb-6 lg:px-20 lg:pb-20">
+    <div className="mx-auto max-w-6xl space-y-2 p-3">
+      
       {/* Restaurant Categories With Items */}
       <div className="space-y-14">
         {data.map((category) => (

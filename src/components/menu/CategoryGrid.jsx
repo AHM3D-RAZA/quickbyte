@@ -1,4 +1,6 @@
 import CategoryCard from "./CategoryCard";
+import { useState, useEffect } from "react";
+import { getMenuItems } from "/src/api/restaurantAPI";
 
 const categoriesData = [
   { id: 1, image: "/src/assets/category1.png", name: "Category 1", restaurantCount: "5 Restaurants" },
@@ -10,12 +12,34 @@ const categoriesData = [
 ];
 
 function CategoryGrid() {
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+        try {
+            const data = await getMenuItems();
+            // console.log(Array.isArray(data)); // true or false
+            console.log(data);
+            setMenuItems(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    fetchMenuItems();
+  }, []);
+
+  const uniqueCategories = menuItems.filter(
+    (item, index, self) =>
+      index === self.findIndex((i) => i.category.id === item.category.id)
+  );
+
   return (
     <section className="px-6 py-8">
       <h2 className="text-2xl font-bold mb-4">Order.uk Popular Categories 🤩</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5">
-        {categoriesData.map((cat) => (
-          <CategoryCard key={cat.id} {...cat} />
+        {uniqueCategories.map((menuItem) => (
+          <CategoryCard key={menuItem.category.id} image={`http://127.0.0.1:8000/${menuItem.image}`} name={menuItem.category.name} 
+             restaurantCount={`${menuItems.filter((item) => item.category.id === menuItem.category.id).length} Restaurants`}/>
         ))}
       </div>
     </section>

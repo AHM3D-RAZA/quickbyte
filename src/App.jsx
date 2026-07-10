@@ -10,6 +10,9 @@ import Profile from "/src/pages/customer/Profile";
 import ProtectedRoute from "/src/components/auth/ProtectedRoute";
 import AdminDashboard from "/src/pages/admin/AdminDashboard";
 import AdminRoute from "/src/pages/auth/AdminRoute";
+import Checkout from "/src/components/cart/Checkout";
+import Cart from "/src/Pages/customer/Cart";
+import CategoryItems from "/src/pages/customer/CategoryItems";
 
 function App() {
   return (
@@ -20,9 +23,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/popup" element={<ForPopupTest />} />
+        <Route path="/categoryitems" element={<CategoryItems />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/cart" element={<Cart />} />
         </Route>
 
         <Route element={<AdminRoute />}>

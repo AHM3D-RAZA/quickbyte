@@ -5,8 +5,12 @@ export const getRestaurants = async () => {
     return response.data.data;
 };
 
-// export const getRestaurant = async (id) => {
-//     const response = await api.get(`/restaurants/${id}/`);
-//     return response.data;
-// };
+export const getMenuItems = async () => {
+    const response = await api.get(`/restaurants/all-menuitem`);
+    return response.data.data;
+};
 
+export const getDeals = async () => {
+    const response = await api.get(`/restaurants/all-deal/`);
+    return response.data.data;
+};
