@@ -17,8 +17,11 @@ function PromoCard({
 }) {
   return (
     <div
-      className="relative flex h-70 w-full flex-col justify-between overflow-hidden rounded-2xl bg-cover bg-center sm:h-75"
-      style={{ backgroundImage: `url(${bgImage})` }}
+      className="relative flex h-70 w-full flex-col justify-between overflow-hidden rounded-2xl mt-5 bg-cover bg-center sm:h-75"
+      style={{
+  backgroundImage: `url(${bgImage})`,
+  backgroundPosition: "center 10%",
+}}
     >
       {/* darkening/tint overlay so text stays legible over the photo */}
       <div className={`absolute inset-0 ${overlay}`} aria-hidden="true" />
@@ -31,7 +34,7 @@ function PromoCard({
       </div>
 
       {/* bottom content */}
-      <div className="relative z-10 p-6">
+      <div className="relative z-10 p-3">
         <p className="mb-1 text-sm font-semibold text-[#FC8A06]">{eyebrow}</p>
         <h3 className="mb-4 text-2xl font-extrabold text-white">{heading}</h3>
         <Button onClick={onGetStarted}>Get Started</Button>
@@ -49,8 +52,8 @@ function PromoCard({
  *  - onPartnerClick, onRiderClick (optional callbacks for the two CTA buttons)
  */
 export default function GetStarted({
-  partnerImage,
-  riderImage,
+  partnerImage = chefImage,
+  riderImage = riderImageAsset,
   onPartnerClick,
   onRiderClick,
 }) {

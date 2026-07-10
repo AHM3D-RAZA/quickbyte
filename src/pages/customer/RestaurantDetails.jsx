@@ -20,7 +20,7 @@ const RestaurantDetails = () => {
       <Navbar />
       <RestaurantHero />
 
-      <div className="space-y-6 p-6 mx-14">
+      <div className="space-y-6 p-6 mx-6 lg:mx-16">
         <RestaurantOffersHeader restaurantName="McDolands" />
       </div>
       <OfferCategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} />
@@ -30,20 +30,11 @@ const RestaurantDetails = () => {
       <Location />
       
       
-      <div className="relative py-30">
+      <div className="relative py-10 lg:py-30">
           <Reviews />
-          
-          {/* Overall Rating Badge positioned perfectly centered on the bottom border line */}
-          <div className="absolute left-1/2 bottom-30 transform -translate-x-1/2 translate-y-1/2 z-10">
-            <img 
-              src={OverallRatingImage} 
-              alt="Overall Rating" 
-              className="w-[153px] h-[178px] rounded-[12px] bg-white border border-gray-200 shadow-sm" // Dimensions matching {2BA58F3A-382A-4CF4-B27F-C0939466E606}.png exactly
-            />
-          </div>
         </div>
 
-      <div className="mx-auto space-y-6 px-15 pb-15">
+      <div className="mx-auto  lg:px-15 lg:pb-15">
         <RestaurantGrid type="Similar" />
       </div>
       
