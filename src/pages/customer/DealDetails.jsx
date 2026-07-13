@@ -1,9 +1,13 @@
 import React from 'react'
+import DealDetailPage from '../../components/deals/Details';
+import Navbar from '../../components/layout/Navbar';
 
 const DealDetails = () => {
-    const { dealId } = useParams();
   return (
-    <div>dealDetails</div>
+    <>
+        <Navbar />
+        <DealDetailPage />
+    </>
   )
 }
 

@@ -9,7 +9,7 @@ import reviewImage from "/src/assets/Rectangle review.png";
 import Motocross from "/src/assets/Motocross.png";
 import OrderComplete from "/src/assets/Order Completed.png";
 
-export default function RestaurantHero() {
+export default function RestaurantHero({restaurant, description}) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
@@ -42,7 +42,7 @@ export default function RestaurantHero() {
                 isDark ? "text-white" : "text-gray-700"
               }`}
             >
-              I'm lovin' it!
+              {description}
             </p>
 
             <h1
@@ -50,9 +50,7 @@ export default function RestaurantHero() {
                 isDark ? "text-white" : "text-gray-900"
               }`}
             >
-              McDonald's East
-              <br className="hidden sm:block" />
-              London
+              {restaurant}
             </h1>
 
             {/* Info Badges */}

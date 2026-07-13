@@ -22,7 +22,7 @@ const CategoryItems = () => {
   }, []);
 
   const categoryItems = menuItems.filter(
-    (item) => item.category.id == categoryId
+    (item) => item.category?.id == categoryId
   );
 
   // console.log(categoryItems);
@@ -45,9 +45,7 @@ const CategoryItems = () => {
         {/* Restaurant Name */}
         <h2 className="text-2xl font-bold text-[#FC8A06] mb-6">
           {
-            categoryItems.find(
-              item => item.restaurant.id === restaurantId
-            ).restaurant.name
+            categoryItems.find(item => item.restaurant.id === restaurantId)?.restaurant?.name
           }
         </h2>
 
@@ -62,11 +60,13 @@ const CategoryItems = () => {
                 key={item.id}
                 className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
               >
-                <img
-                  src={`http://127.0.0.1:8000${item.image}`}
-                  alt={item.name}
-                  className="w-full h-[180px] object-cover"
-                />
+                {item.image && (
+                  <img
+                    src={`http://127.0.0.1:8000${item.image}`}
+                    alt={item.name}
+                    className="w-full h-[180px] object-cover"
+                  />
+                )}
 
                 <div className="p-4">
 

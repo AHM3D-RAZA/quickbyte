@@ -87,7 +87,7 @@ function DealsGrid() {
         {deals.map((deal) => (
           <DealCard key={deal.id} image={`http://127.0.0.1:8000${deal.image}`} name={deal.name} 
             restaurantLabel={deal.items?.[0]?.menu_item?.restaurant?.name || "Unknown Restaurant"} 
-            discount={`\$${deal.combo_price}`} onClick={() => navigate(`/dealDetails/${deal.id}`)} />
+            discount={`\$${deal.combo_price}`} onClick={() => navigate(`/deal/${deal.id}`)} />
         ))}
       </div>
     </section>

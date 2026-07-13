@@ -14,3 +14,8 @@ export const getDeals = async () => {
     const response = await api.get(`/restaurants/all-deal/`);
     return response.data.data;
 };
+
+export const getRestaurantById = async (id) => {
+  const response = await api.get(`/restaurants/restaurant/${id}`);
+  return response.data.data;
+};

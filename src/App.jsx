@@ -20,12 +20,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/restaurant" element={<RestaurantDetails />} />
+        <Route path="/restaurant/:restaurantId" element={<RestaurantDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/popup" element={<ForPopupTest />} />
         <Route path="/category/:categoryId" element={<CategoryItems />} />
-        <Route path="/dealDetails/:dealId" element={<DealDetails />} />
+        <Route path="/deal/:dealId" element={<DealDetails />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
