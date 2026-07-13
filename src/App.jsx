@@ -11,7 +11,8 @@ import ProtectedRoute from "/src/components/auth/ProtectedRoute";
 import AdminDashboard from "/src/pages/admin/AdminDashboard";
 import AdminRoute from "/src/pages/auth/AdminRoute";
 import Checkout from "/src/components/cart/Checkout";
-import Cart from "/src/Pages/customer/Cart";
+import Cart from "/src/pages/customer/Cart";
+import CheckoutPage from "/src/pages/customer/CheckoutPage";
 import CategoryItems from "/src/pages/customer/CategoryItems";
 import DealDetails from "./pages/customer/dealDetails";
 
@@ -30,6 +31,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Route>
 
         <Route element={<AdminRoute />}>

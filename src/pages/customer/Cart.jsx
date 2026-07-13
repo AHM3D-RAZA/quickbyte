@@ -1,6 +1,7 @@
-import { useState } from "react";
-import Checkout from "/src/components/cart/Checkout";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import Navbar from "/src/components/layout/Navbar";
+import Footer from "/src/components/layout/Footer";
+import CartDetails from "/src/components/cart/CartDetails";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -47,18 +48,25 @@ export default function Cart() {
 
     setCartItems(updatedCart);
     localStorage.setItem("UserCart", JSON.stringify(updatedCart));
-    // }
   };
+
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("UserCart")) || [];
     console.log(storedCart);
     setCartItems(storedCart);
   }, []);
+
   return (
-    <Checkout
-      cartItems={cartItems}
-      onIncrease={handleIncrease}
-      onDecrease={handleDecrease}
-    />
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow bg-brand-offwhite">
+        <CartDetails
+          cartItems={cartItems}
+          onIncrease={handleIncrease}
+          onDecrease={handleDecrease}
+        />
+      </main>
+      <Footer />
+    </div>
   );
 }
