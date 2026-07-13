@@ -13,6 +13,7 @@ import AdminRoute from "/src/pages/auth/AdminRoute";
 import Checkout from "/src/components/cart/Checkout";
 import Cart from "/src/Pages/customer/Cart";
 import CategoryItems from "/src/pages/customer/CategoryItems";
+import DealDetails from "./pages/customer/dealDetails";
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/popup" element={<ForPopupTest />} />
-        <Route path="/categoryitems" element={<CategoryItems />} />
+        <Route path="/category/:categoryId" element={<CategoryItems />} />
+        <Route path="/dealDetails/:dealId" element={<DealDetails />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />

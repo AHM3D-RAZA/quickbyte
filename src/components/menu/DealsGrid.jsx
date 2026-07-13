@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import DealCard from "./dealCard";
 import { getDeals } from "/src/api/restaurantAPI";
+import { useNavigate } from "react-router-dom";
 
 const tabs = [
   "Vegan",
@@ -19,7 +20,8 @@ const deals = [
 function DealsGrid() {
   const [activeTab, setActiveTab] = useState(0);
   const [deals, setDeals] = useState([]);
-  
+  const navigate = useNavigate();
+
     useEffect(() => {
   
       const fetchDeals = async () => {
@@ -83,7 +85,9 @@ function DealsGrid() {
       {/* Desktop: 3-column grid */}
       <div className="hidden lg:grid grid-cols-3 gap-5">
         {deals.map((deal) => (
-          <DealCard key={deal.id} image={`http://127.0.0.1:8000${deal.image}`} name={deal.name} restaurantLabel={deal.items?.[0]?.menu_item?.restaurant?.name || "Unknown Restaurant"} discount={`\$${deal.combo_price}`} />
+          <DealCard key={deal.id} image={`http://127.0.0.1:8000${deal.image}`} name={deal.name} 
+            restaurantLabel={deal.items?.[0]?.menu_item?.restaurant?.name || "Unknown Restaurant"} 
+            discount={`\$${deal.combo_price}`} onClick={() => navigate(`/dealDetails/${deal.id}`)} />
         ))}
       </div>
     </section>
