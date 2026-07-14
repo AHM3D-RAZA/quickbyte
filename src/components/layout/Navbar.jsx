@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from "../../assets/OrderUKLogo.png";
 import locationIcon from "../../assets/LocationIcon.png";
 import basketIcon from "../../assets/Full Shopping Basket.png";
 import arrowDownIcon from "../../assets/Forward Button.png";
-import { Menu } from 'lucide-react';
+import { Menu, ChevronDown } from 'lucide-react';
 import ThemeToggle from '/src/components/common/ThemeToggle';
 import { HashLink } from "react-router-hash-link";
 import { useAuthModal } from "/src/context/AuthModalContext";
 import { useAuth } from "/src/context/AuthContext";
+import { getRestaurants } from "/src/api/restaurantAPI";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -19,10 +20,39 @@ const navLinks = [
 ];
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [restaurants, setRestaurants] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const { openLogin } = useAuthModal();
   const { user, logout } = useAuth();
+
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const data = await getRestaurants();
+        setRestaurants(data || []);
+      } catch (error) {
+        console.error("Failed to fetch restaurants for nav dropdown:", error);
+      }
+    };
+    fetchRestaurants();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   
   return (
     <div>
@@ -122,6 +152,40 @@ const Navbar = () => {
                   >
                     {link.label}
                   </HashLink>
+                ) : link.label === "Restaurants" ? (
+                  <div key={link.label} className="relative" ref={dropdownRef}>
+                    <button
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      className={`w-[127px] h-[45px] flex items-center justify-center gap-1 transition-colors duration-200 cursor-pointer ${
+                        dropdownOpen || window.location.pathname.startsWith("/restaurant")
+                          ? "bg-brand-orange text-white rounded-pill"
+                          : "text-brand-dark hover:text-brand-orange"
+                      }`}
+                    >
+                      <span>{link.label}</span>
+                      <ChevronDown size={16} className={`transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    {dropdownOpen && (
+                      <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[220px] bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 rounded-[12px] shadow-lg py-2 z-50 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-brand-orange">
+                        {restaurants.length === 0 ? (
+                          <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">Loading...</div>
+                        ) : (
+                          restaurants.map((r) => (
+                            <button
+                              key={r.id}
+                              onClick={() => {
+                                setDropdownOpen(false);
+                                navigate(`/restaurant/${r.id}`);
+                              }}
+                              className="w-full text-left px-4 py-2 text-sm text-brand-dark dark:text-white hover:bg-brand-orange/10 hover:text-brand-orange transition-colors duration-150 cursor-pointer block truncate"
+                            >
+                              {r.name}
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   <NavLink
                     key={link.label}
@@ -252,6 +316,37 @@ const Navbar = () => {
                 >
                   {link.label}
                 </HashLink>
+              ) : link.label === "Restaurants" ? (
+                <div key={link.label} className="flex flex-col gap-2">
+                  <button
+                    onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
+                    className="flex items-center justify-between text-brand-dark font-medium text-left w-full cursor-pointer"
+                  >
+                    <span>{link.label}</span>
+                    <ChevronDown size={18} className={`transition-transform duration-200 ${mobileDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  {mobileDropdownOpen && (
+                    <div className="flex flex-col gap-2 pl-4 max-h-48 overflow-y-auto border-l-2 border-brand-orange/30 py-1">
+                      {restaurants.length === 0 ? (
+                        <div className="text-xs text-gray-500">Loading...</div>
+                      ) : (
+                        restaurants.map((r) => (
+                          <button
+                            key={r.id}
+                            onClick={() => {
+                              setMobileDropdownOpen(false);
+                              setMenuOpen(false);
+                              navigate(`/restaurant/${r.id}`);
+                            }}
+                            className="text-left text-sm text-brand-dark hover:text-brand-orange py-1 cursor-pointer block truncate"
+                          >
+                            {r.name}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
               ) : (
                 <NavLink
                   key={link.label}

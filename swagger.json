@@ -1,0 +1,1842 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Food Ordering APIs",
+        "description": "Test description",
+        "termsOfService": "https://www.google.com/policies/terms/",
+        "contact": {
+            "email": "contact@snippets.local"
+        },
+        "license": {
+            "name": "BSD License"
+        },
+        "version": "v1"
+    },
+    "host": "127.0.0.1:8000",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "basePath": "/",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "security": [
+        {
+            "Bearer": []
+        }
+    ],
+    "paths": {
+        "/order/admin/analytics/orders-by-status/": {
+            "get": {
+                "operationId": "order_admin_analytics_orders-by-status_list",
+                "description": "Count of orders grouped by current status.\nUseful for dashboard status breakdown cards.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/admin/analytics/overview/": {
+            "get": {
+                "operationId": "order_admin_analytics_overview_list",
+                "description": "Top level dashboard cards:\ntotal orders, total revenue, active restaurants, total users.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/admin/analytics/popular-deals/": {
+            "get": {
+                "operationId": "order_admin_analytics_popular-deals_list",
+                "description": "Top N deals by total quantity sold.\nGET /admin/analytics/popular-deals/?limit=10",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/admin/analytics/popular-items/": {
+            "get": {
+                "operationId": "order_admin_analytics_popular-items_list",
+                "description": "Top N menu items by total quantity sold.\nGET /admin/analytics/popular-items/?limit=10",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/admin/analytics/revenue-by-restaurant/": {
+            "get": {
+                "operationId": "order_admin_analytics_revenue-by-restaurant_list",
+                "description": "Total revenue and order count per restaurant.\nOnly counts delivered orders.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/admin/analytics/revenue-over-time/": {
+            "get": {
+                "operationId": "order_admin_analytics_revenue-over-time_list",
+                "description": "Revenue trend over time, filterable by range.\nGET /admin/analytics/revenue-over-time/?range=daily|weekly|monthly\nOnly counts delivered orders.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/admin/orders": {
+            "get": {
+                "operationId": "order_admin_orders_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/admin/orders/{order_id}/status/": {
+            "patch": {
+                "operationId": "order_admin_orders_status_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "required": [
+                                "status"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "description": "New order status",
+                                    "type": "string",
+                                    "enum": [
+                                        "pending",
+                                        "accepted",
+                                        "preparing",
+                                        "out_for_delivery",
+                                        "delivered",
+                                        "cancelled"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "order_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/order/cart/": {
+            "get": {
+                "operationId": "order_cart_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/cart/add/": {
+            "post": {
+                "operationId": "order_cart_add_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "required": [
+                                "menu_item_id",
+                                "deal_id"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "menu_item_id": {
+                                    "description": "ID of the menu item to add",
+                                    "type": "integer"
+                                },
+                                "deal_id": {
+                                    "description": "ID of the deal to add",
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Cart"
+                        }
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/cart/delete-item/{item_id}/": {
+            "delete": {
+                "operationId": "order_cart_delete-item_delete",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "item_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/order/cart/update-item/{item_id}/": {
+            "patch": {
+                "operationId": "order_cart_update-item_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "required": [
+                                "quantity"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "quantity": {
+                                    "description": "New quantity (min 1)",
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/CartItem"
+                        }
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "item_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/order/checkout/": {
+            "post": {
+                "operationId": "order_checkout_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "required": [
+                                "delivery_address",
+                                "payment_method"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "delivery_address": {
+                                    "description": "Delivery address",
+                                    "type": "string"
+                                },
+                                "payment_method": {
+                                    "description": "Payment method",
+                                    "type": "string",
+                                    "enum": [
+                                        "cash",
+                                        "stripe",
+                                        "jazzcash",
+                                        "easypaisa"
+                                    ]
+                                },
+                                "transaction_id": {
+                                    "description": "Required for online payments",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Checkout complete"
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/order/order/{order_id}": {
+            "get": {
+                "operationId": "order_order_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "order_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/order/order/{order_id}/cancel/": {
+            "patch": {
+                "operationId": "order_order_cancel_partial_update",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "order_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/order/orders/": {
+            "get": {
+                "operationId": "order_orders_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "order"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/all-category": {
+            "get": {
+                "operationId": "restaurants_all-category_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/all-deal-item/": {
+            "get": {
+                "operationId": "restaurants_all-deal-item_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/all-deal/": {
+            "get": {
+                "operationId": "restaurants_all-deal_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/all-menuitem": {
+            "get": {
+                "operationId": "restaurants_all-menuitem_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/all-restaurant": {
+            "get": {
+                "operationId": "restaurants_all-restaurant_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/category/{cat_id}": {
+            "get": {
+                "operationId": "restaurants_category_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "cat_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/create-category/": {
+            "post": {
+                "operationId": "restaurants_create-category_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/create-deal-item/": {
+            "post": {
+                "operationId": "restaurants_create-deal-item_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DealItem"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/DealItem"
+                        }
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/create-deal/": {
+            "post": {
+                "operationId": "restaurants_create-deal_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Deal"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Deal"
+                        }
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/create-menuitem/": {
+            "post": {
+                "operationId": "restaurants_create-menuitem_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/MenuItem"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/MenuItem"
+                        }
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/create-restaurant/": {
+            "post": {
+                "operationId": "restaurants_create-restaurant_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Restaurant"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Restaurant"
+                        }
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/deal-item/{item_id}/": {
+            "get": {
+                "operationId": "restaurants_deal-item_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "item_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/deal/{deal_id}/": {
+            "get": {
+                "operationId": "restaurants_deal_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "deal_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/delete-category/{cat_id}/": {
+            "delete": {
+                "operationId": "restaurants_delete-category_delete",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "cat_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/delete-deal-item/{item_id}/": {
+            "delete": {
+                "operationId": "restaurants_delete-deal-item_delete",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "item_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/delete-deal/{deal_id}/": {
+            "delete": {
+                "operationId": "restaurants_delete-deal_delete",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "deal_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/delete-menuitem/{menu_id}/": {
+            "delete": {
+                "operationId": "restaurants_delete-menuitem_delete",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "menu_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/delete-restaurant/{rest_id}/": {
+            "delete": {
+                "operationId": "restaurants_delete-restaurant_delete",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "rest_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/menuitem/{menu_id}": {
+            "get": {
+                "operationId": "restaurants_menuitem_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "menu_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/restaurant/{rest_id}": {
+            "get": {
+                "operationId": "restaurants_restaurant_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "rest_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/search/": {
+            "get": {
+                "operationId": "restaurants_search_list",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search query",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": []
+        },
+        "/restaurants/update-category/{cat_id}/": {
+            "patch": {
+                "operationId": "restaurants_update-category_partial_update",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "cat_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/update-deal-item/{item_id}/": {
+            "patch": {
+                "operationId": "restaurants_update-deal-item_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DealItem"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/DealItem"
+                        }
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "item_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/update-deal/{deal_id}/": {
+            "patch": {
+                "operationId": "restaurants_update-deal_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Deal"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Deal"
+                        }
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "deal_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/update-menuitem/{menu_id}/": {
+            "patch": {
+                "operationId": "restaurants_update-menuitem_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/MenuItem"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/MenuItem"
+                        }
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "menu_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/restaurants/update-restaurant/{rest_id}/": {
+            "patch": {
+                "operationId": "restaurants_update-restaurant_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Restaurant"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Restaurant"
+                        }
+                    }
+                },
+                "tags": [
+                    "restaurants"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "rest_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/user/login/": {
+            "post": {
+                "operationId": "user_login_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Login"
+                        }
+                    }
+                },
+                "tags": [
+                    "user"
+                ]
+            },
+            "parameters": []
+        },
+        "/user/register/": {
+            "post": {
+                "operationId": "user_register_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RegisterSerilizer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/RegisterSerilizer"
+                        }
+                    }
+                },
+                "tags": [
+                    "user"
+                ]
+            },
+            "parameters": []
+        }
+    },
+    "definitions": {
+        "OrderItem": {
+            "required": [
+                "price_at_order"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "image": {
+                    "title": "Image",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "type": {
+                    "title": "Type",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "quantity": {
+                    "title": "Quantity",
+                    "type": "integer",
+                    "maximum": 9223372036854775807,
+                    "minimum": 0
+                },
+                "price_at_order": {
+                    "title": "Price at order",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "subtotal": {
+                    "title": "Subtotal",
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "OrderStatusHistory": {
+            "required": [
+                "status"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "status": {
+                    "title": "Status",
+                    "type": "string",
+                    "enum": [
+                        "pending",
+                        "accepted",
+                        "preparing",
+                        "out_for_delivery",
+                        "delivered",
+                        "cancelled"
+                    ]
+                },
+                "changed_by": {
+                    "title": "Changed by",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "timestamp": {
+                    "title": "Timestamp",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "Order": {
+            "required": [
+                "total_price"
+            ],
+            "type": "object",
+            "properties": {
+                "order_id": {
+                    "title": "Order id",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "restaurant": {
+                    "title": "Restaurant",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/OrderItem"
+                    },
+                    "readOnly": true
+                },
+                "total_price": {
+                    "title": "Total price",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "current_status": {
+                    "title": "Current status",
+                    "type": "string",
+                    "enum": [
+                        "pending",
+                        "accepted",
+                        "preparing",
+                        "out_for_delivery",
+                        "delivered",
+                        "cancelled"
+                    ]
+                },
+                "delivery_address": {
+                    "title": "Delivery address",
+                    "type": "string",
+                    "maxLength": 255,
+                    "x-nullable": true
+                },
+                "status_history": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/OrderStatusHistory"
+                    },
+                    "readOnly": true
+                },
+                "created_at": {
+                    "title": "Created at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "updated_at": {
+                    "title": "Updated at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "CartItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "price": {
+                    "title": "Price",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "image": {
+                    "title": "Image",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "type": {
+                    "title": "Type",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "restaurant": {
+                    "title": "Restaurant",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "quantity": {
+                    "title": "Quantity",
+                    "type": "integer",
+                    "maximum": 9223372036854775807,
+                    "minimum": 0
+                },
+                "subtotal": {
+                    "title": "Subtotal",
+                    "type": "string",
+                    "readOnly": true
+                }
+            }
+        },
+        "Cart": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CartItem"
+                    },
+                    "readOnly": true
+                },
+                "total_price": {
+                    "title": "Total price",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "updated_at": {
+                    "title": "Updated at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "Category": {
+            "required": [
+                "name"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 100,
+                    "x-nullable": true
+                },
+                "slug": {
+                    "title": "Slug",
+                    "type": "string",
+                    "format": "slug",
+                    "pattern": "^[-a-zA-Z0-9_]+$",
+                    "maxLength": 100,
+                    "x-nullable": true
+                },
+                "created_at": {
+                    "title": "Created at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "updated_at": {
+                    "title": "Updated at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "AllRestaurant": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 150,
+                    "x-nullable": true
+                },
+                "image": {
+                    "title": "Image",
+                    "type": "string",
+                    "readOnly": true,
+                    "x-nullable": true,
+                    "format": "uri"
+                },
+                "created_by": {
+                    "title": "Created by",
+                    "type": "integer",
+                    "x-nullable": true
+                },
+                "created_at": {
+                    "title": "Created at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "AllCategory": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 100,
+                    "x-nullable": true
+                },
+                "created_by": {
+                    "title": "Created by",
+                    "type": "integer",
+                    "x-nullable": true
+                },
+                "created_at": {
+                    "title": "Created at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "AllMenuItem": {
+            "required": [
+                "price"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 150,
+                    "x-nullable": true
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "price": {
+                    "title": "Price",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "image": {
+                    "title": "Image",
+                    "type": "string",
+                    "readOnly": true,
+                    "x-nullable": true,
+                    "format": "uri"
+                },
+                "restaurant": {
+                    "$ref": "#/definitions/AllRestaurant"
+                },
+                "category": {
+                    "$ref": "#/definitions/AllCategory"
+                }
+            }
+        },
+        "DealItem": {
+            "required": [
+                "deal_id",
+                "quantity",
+                "menu_item_id"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "deal_id": {
+                    "title": "Deal id",
+                    "type": "integer"
+                },
+                "quantity": {
+                    "title": "Quantity",
+                    "type": "integer",
+                    "maximum": 9223372036854775807,
+                    "minimum": 0
+                },
+                "menu_item_id": {
+                    "title": "Menu item id",
+                    "type": "integer"
+                },
+                "menu_item": {
+                    "$ref": "#/definitions/AllMenuItem"
+                }
+            }
+        },
+        "Deal": {
+            "required": [
+                "name",
+                "combo_price"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 150,
+                    "x-nullable": true
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "combo_price": {
+                    "title": "Combo price",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "image": {
+                    "title": "Image",
+                    "type": "string",
+                    "readOnly": true,
+                    "x-nullable": true,
+                    "format": "uri"
+                },
+                "is_active": {
+                    "title": "Is active",
+                    "type": "boolean"
+                },
+                "is_featured": {
+                    "title": "Is featured",
+                    "type": "boolean"
+                },
+                "created_by": {
+                    "title": "Created by",
+                    "type": "integer",
+                    "x-nullable": true
+                },
+                "created_at": {
+                    "title": "Created at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "updated_at": {
+                    "title": "Updated at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DealItem"
+                    },
+                    "readOnly": true
+                }
+            }
+        },
+        "MenuItem": {
+            "required": [
+                "restaurant_id",
+                "category_id",
+                "name",
+                "price"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "restaurant_id": {
+                    "title": "Restaurant id",
+                    "type": "integer"
+                },
+                "category_id": {
+                    "title": "Category id",
+                    "type": "integer",
+                    "x-nullable": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 150,
+                    "x-nullable": true
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "price": {
+                    "title": "Price",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "image": {
+                    "title": "Image",
+                    "type": "string",
+                    "readOnly": true,
+                    "x-nullable": true,
+                    "format": "uri"
+                },
+                "is_available": {
+                    "title": "Is available",
+                    "type": "boolean"
+                },
+                "is_featured": {
+                    "title": "Is featured",
+                    "type": "boolean"
+                },
+                "restaurant": {
+                    "$ref": "#/definitions/AllRestaurant"
+                },
+                "category": {
+                    "$ref": "#/definitions/Category"
+                },
+                "created_at": {
+                    "title": "Created at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "updated_at": {
+                    "title": "Updated at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "RestaurantMenuItem": {
+            "required": [
+                "price"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 150,
+                    "x-nullable": true
+                },
+                "price": {
+                    "title": "Price",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "image": {
+                    "title": "Image",
+                    "type": "string",
+                    "readOnly": true,
+                    "x-nullable": true,
+                    "format": "uri"
+                },
+                "category": {
+                    "$ref": "#/definitions/AllCategory"
+                }
+            }
+        },
+        "Restaurant": {
+            "required": [
+                "name"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 150,
+                    "x-nullable": true
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "address": {
+                    "title": "Address",
+                    "type": "string",
+                    "maxLength": 255,
+                    "x-nullable": true
+                },
+                "image": {
+                    "title": "Image",
+                    "type": "string",
+                    "readOnly": true,
+                    "x-nullable": true,
+                    "format": "uri"
+                },
+                "is_featured": {
+                    "title": "Is featured",
+                    "type": "boolean"
+                },
+                "is_active": {
+                    "title": "Is active",
+                    "type": "boolean"
+                },
+                "menu_items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RestaurantMenuItem"
+                    },
+                    "readOnly": true
+                },
+                "created_at": {
+                    "title": "Created at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "updated_at": {
+                    "title": "Updated at",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                }
+            }
+        },
+        "Login": {
+            "required": [
+                "email",
+                "password"
+            ],
+            "type": "object",
+            "properties": {
+                "email": {
+                    "title": "Email",
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "password": {
+                    "title": "Password",
+                    "type": "string",
+                    "maxLength": 128,
+                    "minLength": 1
+                }
+            }
+        },
+        "RegisterSerilizer": {
+            "required": [
+                "email",
+                "username",
+                "password",
+                "confirm_password",
+                "city"
+            ],
+            "type": "object",
+            "properties": {
+                "email": {
+                    "title": "Email",
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "username": {
+                    "title": "Username",
+                    "type": "string",
+                    "maxLength": 200,
+                    "x-nullable": true
+                },
+                "password": {
+                    "title": "Password",
+                    "type": "string",
+                    "maxLength": 128,
+                    "minLength": 1
+                },
+                "confirm_password": {
+                    "title": "Confirm password",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "country": {
+                    "title": "Country",
+                    "type": "string",
+                    "maxLength": 255,
+                    "x-nullable": true
+                },
+                "city": {
+                    "title": "City",
+                    "type": "string",
+                    "maxLength": 255,
+                    "x-nullable": true
+                }
+            }
+        }
+    }
+}

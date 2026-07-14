@@ -26,8 +26,8 @@ function DealInfoPanel({ deal, onAddToCart, onAddToWishlist }) {
 
       {/* Price row */}
       <div className="flex items-center gap-3 mb-6">
-        <span className="text-3xl font-bold text-[#fc8a06]">Rs. {deal.price}</span>
-        <span className="text-lg text-gray-400 line-through">Rs. {deal.originalPrice}</span>
+        <span className="text-3xl font-bold text-[#fc8a06]">$ {deal.price}</span>
+        <span className="text-lg text-gray-400 line-through">$ {deal.originalPrice}</span>
         <span className="bg-red-50 text-[#e12b25] font-semibold text-sm px-2.5 py-1 rounded-md">
           {deal.discountLabel}
         </span>
@@ -36,8 +36,8 @@ function DealInfoPanel({ deal, onAddToCart, onAddToWishlist }) {
       {/* Info list */}
       <div className="flex flex-col gap-4 mb-6">
         <InfoRow icon="clock" title={deal.deliveryTime} subtitle="Delivery Time" />
-        <InfoRow icon="truck" title="Free Delivery" subtitle={`On orders above Rs. ${deal.freeDeliveryMin}`} />
-        <InfoRow icon="badge" title="Best Deal" subtitle={`You save Rs. ${deal.savings}`} />
+        <InfoRow icon="truck" title="Free Delivery" subtitle={`On orders above $ ${deal.freeDeliveryMin}`} />
+        <InfoRow icon="badge" title="Best Deal" subtitle={`You save $ ${deal.savings}`} />
       </div>
 
       {/* Quantity + Add to cart */}
