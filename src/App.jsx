@@ -14,7 +14,7 @@ import Checkout from "/src/components/cart/Checkout";
 import Cart from "/src/pages/customer/Cart";
 import CheckoutPage from "/src/pages/customer/CheckoutPage";
 import CategoryItems from "/src/pages/customer/CategoryItems";
-import DealDetails from "./pages/customer/dealDetails";
+import DealDetails from "./pages/customer/DealDetails";
 
 function App() {
   return (
