@@ -15,24 +15,24 @@ import { getRestaurantById } from "/src/api/restaurantAPI";
 
 
 const RestaurantDetails = () => {
-    const { restaurantId } = useParams();
-    const [activeCategory, setActiveCategory] = useState("Offers");
-    const [restaurant, setRestaurant] = useState(null);
+  const { restaurantId } = useParams();
+  const [activeCategory, setActiveCategory] = useState("Offers");
+  const [restaurant, setRestaurant] = useState(null);
 
-    useEffect(() => {
-      const fetchRestaurant = async () => {
-        try {
-          const data = await getRestaurantById(restaurantId);
-          console.log(data);
-          setRestaurant(data);
-          
-        } catch (err) {
-          console.error(err);
-        }
-      };
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      try {
+        const data = await getRestaurantById(restaurantId);
+        console.log(data);
+        setRestaurant(data);
 
-      fetchRestaurant();
-    }, [restaurantId]);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchRestaurant();
+  }, [restaurantId]);
 
   return (
     <>
@@ -42,21 +42,21 @@ const RestaurantDetails = () => {
       <div className="space-y-6 p-6 mx-6 lg:mx-16">
         <RestaurantOffersHeader restaurantName={restaurant?.name || "Restaurant"} />
       </div>
-      <OfferCategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} />
-      <OffersGrid onAddOffer={(offer) => console.log(`Added offer: ${offer.title}`)} />
-      
-      <RenderRestaurant />
+      <OfferCategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} restaurantId={restaurantId} />
+      <OffersGrid onAddOffer={(offer) => console.log(`Added offer: ${offer.title}`)} restaurantId={restaurantId} />
+
+      <RenderRestaurant restaurantId={restaurantId} />
       <Location />
-      
-      
+
+
       <div className="relative py-10 lg:py-30">
-          <Reviews />
-        </div>
+        <Reviews />
+      </div>
 
       <div className="mx-auto  lg:px-15 lg:pb-15">
         <RestaurantGrid type="Similar" />
       </div>
-      
+
       <Footer />
     </>
   )

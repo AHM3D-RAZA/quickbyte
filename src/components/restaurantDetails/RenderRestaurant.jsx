@@ -1,22 +1,60 @@
 import React, { useEffect, useState } from "react";
+import MenuItemCard from "/src/components/restaurantDetails/MenuItemCard";
+import { getMenuItems } from "/src/api/restaurantAPI";
 
-import Card from "/src/components/restaurantDetails/Card";
-import { data } from "/src/utils/dummyData";
-
-export default function RestaurantDetail() {
+export default function RestaurantDetail({ restaurantId }) {
   const [userCart, setUserCart] = useState([]);
+  const [restaurantItems, setRestaurantItems] = useState([]);
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("UserCart")) || [];
     setUserCart(storedCart);
   }, []);
 
+
+  useEffect(() => {
+    const fetchRestaurantItems = async () => {
+      try {
+        const data = await getMenuItems();
+        console.log("All data from menu Items API", data);
+        setRestaurantItems(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchRestaurantItems();
+  }, [restaurantId]);
+
+  const filteredItems = restaurantItems.filter(
+    item => item.restaurant.id == restaurantId
+  );
+
+  const categories = [];
+  filteredItems.forEach((item) => {
+    const categoryId = item.category?.id || "others";
+    const categoryName = item.category?.name || "Others";
+
+    const existingCategory = categories.find(
+      (cat) => cat.id === categoryId
+    );
+
+    if (existingCategory) {
+      existingCategory.items.push(item);
+    } else {
+      categories.push({
+        id: categoryId,
+        name: categoryName,
+        items: [item],
+      });
+    }
+  });
+
   const handleAddToCard = (item) => {
     // const updatedCart = [...userCart, item];
     // setUserCart(updatedCart);
 
-      const existingItem = userCart.find((cartItem) => cartItem.id === item.id);
-      let updatedCart;
+    const existingItem = userCart.find((cartItem) => cartItem.id === item.id);
+    let updatedCart;
 
     if (existingItem) {
       updatedCart = userCart.map((cartItem) => {
@@ -46,21 +84,21 @@ export default function RestaurantDetail() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-2 p-3">
-      
+
       {/* Restaurant Categories With Items */}
       <div className="space-y-14">
-        {data.map((category) => (
-          <section key={category.id}>
+        {categories.map((category) => (
+          <section key={category.id} id={`category-${category.id}`}>
             <h2 className="mb-6 text-[32px] font-bold text-[#03081F]">
               {category.name}
             </h2>
 
             <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
               {category.items.map((item) => (
-                <Card
+                <MenuItemCard
                   key={item.id}
-                  data={item}
-                  onBtnClick={() => handleAddToCard(item)}
+                  item={item}
+                  onAdd={() => handleAddToCard(item)}
                 />
               ))}
             </div>

@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function OfferCard({ image, restaurantLabel, title, discount, onAdd, onSelect }) {
+  const navigate = useNavigate();
+
   return (
     <button
       onClick={onSelect}

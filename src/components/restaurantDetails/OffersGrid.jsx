@@ -1,38 +1,42 @@
 import OfferCard from "./OfferCard";
+import { getDeals } from "/src/api/restaurantAPI";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const offers = [
-  {
-    id: 1,
-    image: "/src/assets/offer1.png",
-    restaurantLabel: "Restaurant",
-    title: "Chef Burgers London",
-    discount: "-40%",
-    },
-  {
-    id: 2,
-    image: "/src/assets/offer2.png",
-    restaurantLabel: "Restaurant",
-    title: "Grand Ai Cafe London",
-    discount: "-20%",
-    },
-  {
-    id: 3,
-    image: "/src/assets/offer3.png",
-    restaurantLabel: "Restaurant",
-    title: "Butterbrot Café London",
-    discount: "-17%",
-    },
-];
+function OffersGrid({ onAddOffer, onSelectOffer, restaurantId }) {
+  const [offers, setOffers] = useState([]);
+  const navigate = useNavigate();
 
-function OffersGrid({ onAddOffer, onSelectOffer }) {
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const data = await getDeals();
+        console.log("All offers from menu Items API", data);
+        setOffers(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchOffers();
+  }, [restaurantId]);
+
+  const filteredOffers = offers.filter(
+    item => item?.items?.[0]?.menu_item?.restaurant?.id == restaurantId
+  );
+
+  console.log("filtered", filteredOffers);
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:px-20 lg:py-20 px-6 py-6">
-      {offers.map((offer) => (
+      {filteredOffers.map((offer) => (
         <OfferCard
           key={offer.id}
-          {...offer}
+          restaurantLabel={offer.items[0].menu_item.restaurant.name}
+          title={offer.name}
+          discount={`$${offer.combo_price}`}
+          image={offer.image ? `http://localhost:8000${offer.image}` : "/src/assets/offer3.png"}
           onAdd={() => onAddOffer(offer)}
-          onSelect={() => onSelectOffer(offer)}
+          onSelect={() => navigate(`/deal/${offer.id}`)}
         />
       ))}
     </div>
