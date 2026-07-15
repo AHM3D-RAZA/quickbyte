@@ -3,15 +3,20 @@ import { getDeals } from "/src/api/restaurantAPI";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function OffersGrid({ onAddOffer, onSelectOffer, restaurantId }) {
+function OffersGrid({ restaurantId }) {
+  const [userCart, setUserCart] = useState([]);
   const [offers, setOffers] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("UserCart")) || [];
+    setUserCart(storedCart);
+  }, []);
 
   useEffect(() => {
     const fetchOffers = async () => {
       try {
         const data = await getDeals();
-        console.log("All offers from menu Items API", data);
         setOffers(data);
       } catch (err) {
         console.error(err);
@@ -24,7 +29,41 @@ function OffersGrid({ onAddOffer, onSelectOffer, restaurantId }) {
     item => item?.items?.[0]?.menu_item?.restaurant?.id == restaurantId
   );
 
-  console.log("filtered", filteredOffers);
+  const handleAddToCard = (item) => {
+    const existingItem = userCart.find((cartItem) => cartItem.id === item.id);
+    let updatedCart;
+
+    if (existingItem) {
+      updatedCart = userCart.map((cartItem) => {
+        if (cartItem.id === item.id) {
+          return {
+            ...cartItem,
+            quantity: cartItem.quantity + 1,
+          };
+        }
+        return cartItem;
+      });
+    } else {
+      updatedCart = [
+        ...userCart,
+        {
+          id: item.id,
+          name: item.name,
+          price: Number(item.price),
+          image: item.image
+            ? `http://127.0.0.1:8000${item.image}`
+            : null,
+          description: item.description || "",
+          quantity: 1,
+        },
+      ];
+    }
+
+    localStorage.setItem("UserCart", JSON.stringify(updatedCart));
+    setUserCart(updatedCart);
+
+    window.alert("Cart Updated");
+  };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:px-20 lg:py-20 px-6 py-6">
@@ -35,7 +74,7 @@ function OffersGrid({ onAddOffer, onSelectOffer, restaurantId }) {
           title={offer.name}
           discount={`$${offer.combo_price}`}
           image={offer.image ? `http://localhost:8000${offer.image}` : "/src/assets/offer3.png"}
-          onAdd={() => onAddOffer(offer)}
+          onAdd={() => handleAddToCard(offer)}
           onSelect={() => navigate(`/deal/${offer.id}`)}
         />
       ))}

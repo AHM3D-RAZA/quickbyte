@@ -54,13 +54,6 @@ function DealInfoPanel({ deal, onAddToCart, onAddToWishlist }) {
           🛒 Add to Cart
         </button>
       </div>
-
-      <button
-        onClick={onAddToWishlist}
-        className="flex items-center gap-2 text-gray-600 hover:text-black text-sm cursor-pointer"
-      >
-        ♡ Add to Wishlist
-      </button>
     </div>
   );
 }

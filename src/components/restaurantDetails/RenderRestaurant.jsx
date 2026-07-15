@@ -50,9 +50,6 @@ export default function RestaurantDetail({ restaurantId }) {
   });
 
   const handleAddToCard = (item) => {
-    // const updatedCart = [...userCart, item];
-    // setUserCart(updatedCart);
-
     const existingItem = userCart.find((cartItem) => cartItem.id === item.id);
     let updatedCart;
 
@@ -72,8 +69,19 @@ export default function RestaurantDetail({ restaurantId }) {
         return cartItem;
       });
     } else {
-      updatedCart = [...userCart, { ...item }];
-      console.log("else Updated Cart When the item is new", updatedCart);
+      updatedCart = [
+        ...userCart,
+        {
+          id: item.id,
+          name: item.name,
+          price: Number(item.price),
+          image: item.image
+            ? `http://127.0.0.1:8000${item.image}`
+            : null,
+          description: item.description || "",
+          quantity: 1,
+        },
+      ];
     }
 
     localStorage.setItem("UserCart", JSON.stringify(updatedCart));

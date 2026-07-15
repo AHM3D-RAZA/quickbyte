@@ -6,7 +6,6 @@ export default function CheckoutDetails() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("card");
-  const [deliveryTime, setDeliveryTime] = useState("now");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [orderId, setOrderId] = useState("");
 
@@ -48,9 +47,7 @@ export default function CheckoutDetails() {
     return total + item.price * item.quantity;
   }, 0);
 
-  const deliveryFee = subTotal > 0 ? 2.5 : 0;
-  const discount = subTotal > 50 ? 10 : 0;
-  const total = Math.max(0, subTotal + deliveryFee - discount);
+  const total = Math.max(0, subTotal);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 font-body lg:px-8 relative">
@@ -64,7 +61,7 @@ export default function CheckoutDetails() {
 
       <div className="flex flex-col gap-2 mb-8">
         <h1 className="text-4xl font-extrabold text-brand-dark">Checkout</h1>
-        <p className="text-gray-500">Provide your delivery details and choose a payment method to place your order.</p>
+        <p className="text-gray-500">Provide your details and choose a payment method to place your order.</p>
       </div>
 
       <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -147,50 +144,16 @@ export default function CheckoutDetails() {
             </div>
           </div>
 
-          {/* Section 2: Delivery Schedule */}
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-brand-dark mb-4 pb-2 border-b border-gray-100">
-              2. Delivery Timing
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={() => setDeliveryTime("now")}
-                className={`rounded-xl border p-4 text-center transition-all ${
-                  deliveryTime === "now"
-                    ? "border-brand-orange bg-orange-50/50 text-brand-orange font-bold"
-                    : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                }`}
-              >
-                <p className="text-sm">As soon as possible</p>
-                <p className="text-xs text-gray-400 mt-1">20 - 35 mins</p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setDeliveryTime("later")}
-                className={`rounded-xl border p-4 text-center transition-all ${
-                  deliveryTime === "later"
-                    ? "border-brand-orange bg-orange-50/50 text-brand-orange font-bold"
-                    : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                }`}
-              >
-                <p className="text-sm">Schedule for later</p>
-                <p className="text-xs text-gray-400 mt-1">Choose slot</p>
-              </button>
-            </div>
-          </div>
-
           {/* Section 3: Payment Method */}
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-bold text-brand-dark mb-4 pb-2 border-b border-gray-100">
-              3. Payment Details
+              2. Payment Details
             </h2>
 
             <div className="flex gap-2 mb-6">
               {[
                 { id: "card", label: "Credit/Debit Card", icon: CreditCard },
-                { id: "paypal", label: "PayPal", icon: CheckCircle },
+                { id: "stripe", label: "Stripe", icon: CheckCircle },
                 { id: "cod", label: "Cash on Delivery", icon: DollarSign },
               ].map((method) => {
                 const Icon = method.icon;
@@ -199,11 +162,10 @@ export default function CheckoutDetails() {
                     key={method.id}
                     type="button"
                     onClick={() => setPaymentMethod(method.id)}
-                    className={`flex-1 rounded-xl border p-3 flex items-center justify-center gap-2 text-xs font-bold transition-all ${
-                      paymentMethod === method.id
-                        ? "border-brand-orange bg-orange-50/50 text-brand-orange"
-                        : "border-gray-200 text-gray-500 hover:bg-gray-50"
-                    }`}
+                    className={`flex-1 rounded-xl border p-3 flex items-center justify-center gap-2 text-xs font-bold transition-all ${paymentMethod === method.id
+                      ? "border-brand-orange bg-orange-50/50 text-brand-orange"
+                      : "border-gray-200 text-gray-500 hover:bg-gray-50"
+                      }`}
                   >
                     <Icon className="w-4 h-4 shrink-0" />
                     <span className="hidden sm:inline">{method.label}</span>
@@ -276,10 +238,10 @@ export default function CheckoutDetails() {
               </div>
             )}
 
-            {paymentMethod === "paypal" && (
+            {paymentMethod === "stripe" && (
               <div className="rounded-xl bg-blue-50 border border-blue-100 p-4 text-center">
                 <p className="text-sm text-blue-700 font-semibold">
-                  You will be redirected to PayPal's official portal to authorize the transaction.
+                  You will be redirected to Stripe's official portal to authorize the transaction.
                 </p>
               </div>
             )}
@@ -309,7 +271,7 @@ export default function CheckoutDetails() {
                     <span className="font-bold text-brand-orange bg-orange-50 px-2 py-0.5 rounded text-xs">
                       {item.quantity}x
                     </span>
-                    <span className="font-medium text-brand-dark truncate max-w-[140px]">{item.title}</span>
+                    <span className="font-medium text-brand-dark truncate max-w-[140px]">{item.name}</span>
                   </div>
                   <span className="font-bold text-brand-dark">£{(item.price * item.quantity).toFixed(2)}</span>
                 </div>
@@ -324,18 +286,6 @@ export default function CheckoutDetails() {
                 <span>Subtotal</span>
                 <span className="font-semibold text-brand-dark">£{subTotal.toFixed(2)}</span>
               </div>
-
-              <div className="flex justify-between text-gray-500 text-sm">
-                <span>Delivery Fee</span>
-                <span className="font-semibold text-brand-dark">£{deliveryFee.toFixed(2)}</span>
-              </div>
-
-              {discount > 0 && (
-                <div className="flex justify-between text-green-600 text-sm font-semibold">
-                  <span>Discount</span>
-                  <span>-£{discount.toFixed(2)}</span>
-                </div>
-              )}
 
               <hr className="border-gray-100" />
 

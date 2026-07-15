@@ -6,17 +6,11 @@ export default function Checkout({
   onIncrease,
   onDecrease,
 }) {
-  console.log("Checkout:", cartItems);
-
-  // total is considered is accumulator
-  // item is considered as currentITem
   const subTotal = cartItems.reduce((total, item) => {
     return total + item.price * item.quantity;
   }, 0);
 
-  const deliveryFee = 2;
-  const discount = subTotal > 50 ? 10 : 0;
-  const total = subTotal + deliveryFee - discount;
+  const total = subTotal;
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       {/* Back */}
@@ -99,9 +93,6 @@ export default function Checkout({
           })}
           {/* Bottom */}
           <div className="flex items-end justify-between p-6">
-            <button className="rounded-lg border border-yellow-400 px-6 py-3 font-semibold text-yellow-500">
-              + Add Discount
-            </button>
             <div className="w-72 space-y-3">
               <div className="flex justify-between">
                 <span>Subtotal</span>
@@ -109,17 +100,6 @@ export default function Checkout({
                 <span>{subTotal.toFixed(2)}</span>
               </div>
 
-              <div className="flex justify-between">
-                <span>Delivery Fee</span>
-
-                <span>{deliveryFee.toFixed(2)}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Discount</span>
-
-                <span>-£{discount.toFixed(2)}</span>
-              </div>
 
               <hr />
 
@@ -143,17 +123,7 @@ export default function Checkout({
               <span>{subTotal.toFixed(2)}</span>
             </div>
 
-            <div className="flex justify-between">
-              <span>Delivery Fee</span>
 
-              <span>{deliveryFee.toFixed(2)}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Discount</span>
-
-              <span>-£{discount.toFixed(2)}</span>
-            </div>
 
             <hr />
 
@@ -166,12 +136,6 @@ export default function Checkout({
             <button className="mt-6 w-full rounded-lg bg-gray-300 py-3 font-semibold">
               Send Order
             </button>
-
-            <p className="pt-5 text-sm text-gray-500">
-              In the case of a group order, the delivery cost is paid
-              individually and the balance is refunded based on the total
-              amount.
-            </p>
           </div>
         </div>
       </div>

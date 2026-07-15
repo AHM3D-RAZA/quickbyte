@@ -7,7 +7,13 @@ import DealInfoPanel from "./InfoPanel";
 
 export default function DealDetailPage() {
   const { dealId } = useParams();
+  const [userCart, setUserCart] = useState([]);
   const [deal, setDeal] = useState(null);
+
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("UserCart")) || [];
+    setUserCart(storedCart);
+  }, []);
 
   useEffect(() => {
     const fetchDeal = async () => {
@@ -32,6 +38,8 @@ export default function DealDetailPage() {
   }
 
   const dealData = {
+    id: deal.id,          // required for unique cart identification
+
     name: deal.name,
 
     rating: 4.8,          // dummy for now
@@ -55,54 +63,95 @@ export default function DealDetailPage() {
     image: `http://127.0.0.1:8000${deal.image}`,
   };
 
+  const handleAddToCard = (item) => {
+    const existingItem = userCart.find((cartItem) => cartItem.id === item.id);
+    let updatedCart;
+
+    if (existingItem) {
+      updatedCart = userCart.map((cartItem) => {
+        if (cartItem.id === item.id) {
+          return {
+            ...cartItem,
+            quantity: cartItem.quantity + 1,
+          };
+        }
+        console.log("This is cart item", cartItem);
+        console.log(
+          "If Updated Cart When quantity is more than 1",
+          updatedCart,
+        );
+        return cartItem;
+      });
+    } else {
+      updatedCart = [
+        ...userCart,
+        {
+          id: item.id,
+          name: item.name,
+          price: Number(item.price),
+          image: item.image
+            ? `http://127.0.0.1:8000${item.image}`
+            : null,
+          description: item.description || "",
+          quantity: 1,
+        },
+      ];
+    }
+
+    localStorage.setItem("UserCart", JSON.stringify(updatedCart));
+    setUserCart(updatedCart);
+
+    window.alert("Cart Updated");
+  };
+
   return (
     <>
-    <div className="max-w-6xl mx-auto px-6 py-8">
-      <DealBreadcrumb category="Deals" dealName={dealData.name} />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        <DealGallery images={dealData.image} discount="25% OFF" />
-        <DealInfoPanel
-          deal={dealData}
-          onAddToCart={(qty) => console.log("add to cart", qty)}
-          onAddToWishlist={() => console.log("wishlist")}
-        />
-      </div>
-    </div>
-
-    <div className="max-w-6xl mx-auto px-6 pb-10">
-  <h3 className="text-2xl font-bold text-[#03081F] mb-6">
-    Included Items
-  </h3>
-
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-    {deal.items.map((item) => (
-      <div
-        key={item.id}
-        className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
-      >
-        <img
-          src={`http://127.0.0.1:8000${item.menu_item.image}`}
-          alt={item.menu_item.name}
-          className="w-20 h-20 rounded-xl object-cover"
-        />
-
-        <div className="flex-1">
-          <h4 className="font-bold text-lg text-[#03081F]">
-            {item.menu_item.name}
-          </h4>
-
-          <p className="text-[#FC8A06] font-semibold mt-1">
-            ${item.menu_item.price}
-          </p>
-
-          <span className="inline-block mt-2 px-3 py-1 rounded-full bg-orange-100 text-[#FC8A06] text-sm font-semibold">
-            Qty: {item.quantity}
-          </span>
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        <DealBreadcrumb category="Deals" dealName={dealData.name} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <DealGallery images={dealData.image} discount="25% OFF" />
+          <DealInfoPanel
+            deal={dealData}
+            onAddToCart={(qty) => handleAddToCard(dealData)}
+            onAddToWishlist={() => console.log("wishlist")}
+          />
         </div>
       </div>
-    ))}
-  </div>
-</div>
+
+      <div className="max-w-6xl mx-auto px-6 pb-10">
+        <h3 className="text-2xl font-bold text-[#03081F] mb-6">
+          Included Items
+        </h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {deal.items.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
+            >
+              <img
+                src={`http://127.0.0.1:8000${item.menu_item.image}`}
+                alt={item.menu_item.name}
+                className="w-20 h-20 rounded-xl object-cover"
+              />
+
+              <div className="flex-1">
+                <h4 className="font-bold text-lg text-[#03081F]">
+                  {item.menu_item.name}
+                </h4>
+
+                <p className="text-[#FC8A06] font-semibold mt-1">
+                  ${item.menu_item.price}
+                </p>
+
+                <span className="inline-block mt-2 px-3 py-1 rounded-full bg-orange-100 text-[#FC8A06] text-sm font-semibold">
+                  Qty: {item.quantity}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 }

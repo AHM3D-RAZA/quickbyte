@@ -22,30 +22,15 @@ export default function Cart() {
   };
 
   const handleDecrease = (id) => {
-    let updatedCart;
-    const findCartItems = cartItems.find((item) => item.id === id);
-    if (findCartItems.quantity > 1) {
-      updatedCart = cartItems.map((cart) => {
-        if (cart.id === id) {
-          return {
-            ...cart,
-            quantity: cart.quantity - 1,
-          };
-        }
-        return cart;
-      });
-    } else {
-      const isConfirmed = window.confirm(
-        "Are you sure you want to remove this item?",
-      );
+    const updatedCart = cartItems.map((cart) =>
+      cart.id === id ? { ...cart, quantity: cart.quantity - 1 } : cart
+    ).filter((cart) => cart.quantity > 0);
+    setCartItems(updatedCart);
+    localStorage.setItem("UserCart", JSON.stringify(updatedCart));
+  };
 
-      if (!isConfirmed) {
-        return;
-      } else {
-        updatedCart = cartItems.filter((item) => item.id !== id);
-      }
-    }
-
+  const handleDelete = (id) => {
+    const updatedCart = cartItems.filter((item) => item.id !== id);
     setCartItems(updatedCart);
     localStorage.setItem("UserCart", JSON.stringify(updatedCart));
   };
@@ -64,6 +49,7 @@ export default function Cart() {
           cartItems={cartItems}
           onIncrease={handleIncrease}
           onDecrease={handleDecrease}
+          onDelete={handleDelete}
         />
       </main>
       <Footer />
