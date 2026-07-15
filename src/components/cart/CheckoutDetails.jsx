@@ -20,16 +20,13 @@ export default function CheckoutDetails() {
     apartment: "Apt 4B",
     city: "London",
     postcode: "W1B 5AH",
-    phone: "+44 7700 900077",
     cardName: "John Doe",
     cardNumber: "4111 2222 3333 4444",
-    cardExpiry: "12/28",
-    cardCvv: "123",
   });
 
   const paymentMethodMap = {
     cod: "cash",
-    card: "stripe", // placeholder — confirm with backend
+    card: "stripe",
     stripe: "stripe",
   };
 
@@ -145,20 +142,6 @@ export default function CheckoutDetails() {
                   className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
                 />
               </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-semibold text-gray-600 mb-1">
-                  Mobile Number (for delivery rider updates)
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={form.phone}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
-                />
-              </div>
             </div>
           </div>
 
@@ -196,20 +179,6 @@ export default function CheckoutDetails() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-600 mb-1">
-                    Cardholder Name
-                  </label>
-                  <input
-                    type="text"
-                    name="cardName"
-                    value={form.cardName}
-                    onChange={handleInputChange}
-                    required={paymentMethod === "card"}
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-600 mb-1">
                     Card Number
                   </label>
                   <input
@@ -220,38 +189,6 @@ export default function CheckoutDetails() {
                     required={paymentMethod === "card"}
                     className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-600 mb-1">
-                      Expiry Date
-                    </label>
-                    <input
-                      type="text"
-                      name="cardExpiry"
-                      placeholder="MM/YY"
-                      value={form.cardExpiry}
-                      onChange={handleInputChange}
-                      required={paymentMethod === "card"}
-                      className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-600 mb-1">
-                      CVV
-                    </label>
-                    <input
-                      type="password"
-                      name="cardCvv"
-                      maxLength="4"
-                      value={form.cardCvv}
-                      onChange={handleInputChange}
-                      required={paymentMethod === "card"}
-                      className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
-                    />
-                  </div>
                 </div>
               </div>
             )}
