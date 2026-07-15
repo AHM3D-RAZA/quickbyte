@@ -3,18 +3,21 @@ import Navbar from '/src/components/layout/Navbar'
 import Footer from '/src/components/layout/Footer'
 import { useParams } from 'react-router-dom';
 import { getMenuItems } from '../../api/restaurantAPI';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../redux/cartSlice';
 
 const CategoryItems = () => {
   const { categoryId } = useParams();
   const [menuItems, setMenuItems] = useState([]);
+  const dispatch = useDispatch();
 
-  const addToCart = (item) => {
-    const cart = JSON.parse(localStorage.getItem("UserCart")) || [];
-    const existing = cart.find((c) => c.id === item.id);
-    const updated = existing
-      ? cart.map((c) => c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c)
-      : [...cart, { id: item.id, name: item.name, price: Number(item.price), image: `http://127.0.0.1:8000${item.image}`, quantity: 1 }];
-    localStorage.setItem("UserCart", JSON.stringify(updated));
+  const handleAddToCart = (item) => {
+    dispatch(addToCart({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image ? `http://127.0.0.1:8000${item.image}` : null,
+    }));
     alert("Added to cart!");
   };
 
@@ -87,7 +90,7 @@ const CategoryItems = () => {
                   <div className="flex items-center justify-between mt-2">
                     <p className="text-[#FC8A06] font-semibold">${item.price}</p>
                     <button
-                      onClick={() => addToCart(item)}
+                      onClick={() => handleAddToCart(item)}
                       className="bg-[#FC8A06] text-white text-sm font-bold px-3 py-1 rounded-full hover:bg-[#e57c05] transition-colors"
                     >
                       + Add

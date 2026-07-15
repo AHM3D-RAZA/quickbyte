@@ -2,16 +2,13 @@ import OfferCard from "./OfferCard";
 import { getDeals } from "/src/api/restaurantAPI";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "/src/redux/cartSlice";
 
 function OffersGrid({ restaurantId }) {
-  const [userCart, setUserCart] = useState([]);
+  const dispatch = useDispatch();
   const [offers, setOffers] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("UserCart")) || [];
-    setUserCart(storedCart);
-  }, []);
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -30,38 +27,13 @@ function OffersGrid({ restaurantId }) {
   );
 
   const handleAddToCard = (item) => {
-    const existingItem = userCart.find((cartItem) => cartItem.id === item.id);
-    let updatedCart;
-
-    if (existingItem) {
-      updatedCart = userCart.map((cartItem) => {
-        if (cartItem.id === item.id) {
-          return {
-            ...cartItem,
-            quantity: cartItem.quantity + 1,
-          };
-        }
-        return cartItem;
-      });
-    } else {
-      updatedCart = [
-        ...userCart,
-        {
-          id: item.id,
-          name: item.name,
-          price: Number(item.price),
-          image: item.image
-            ? `http://127.0.0.1:8000${item.image}`
-            : null,
-          description: item.description || "",
-          quantity: 1,
-        },
-      ];
-    }
-
-    localStorage.setItem("UserCart", JSON.stringify(updatedCart));
-    setUserCart(updatedCart);
-
+    dispatch(addToCart({
+      id: item.id,
+      name: item.name,
+      price: Number(item.price),
+      image: item.image ? `http://127.0.0.1:8000${item.image}` : null,
+      description: item.description,
+    }));
     window.alert("Cart Updated");
   };
 

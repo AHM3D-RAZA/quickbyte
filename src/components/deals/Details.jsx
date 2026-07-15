@@ -4,16 +4,14 @@ import { getDeals } from "/src/api/restaurantAPI";
 import DealBreadcrumb from "./Breadcrumb";
 import DealGallery from "./ImageGallery";
 import DealInfoPanel from "./InfoPanel";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../redux/cartSlice";
 
 export default function DealDetailPage() {
   const { dealId } = useParams();
-  const [userCart, setUserCart] = useState([]);
+  const userCart = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
   const [deal, setDeal] = useState(null);
-
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("UserCart")) || [];
-    setUserCart(storedCart);
-  }, []);
 
   useEffect(() => {
     const fetchDeal = async () => {
@@ -64,43 +62,13 @@ export default function DealDetailPage() {
   };
 
   const handleAddToCard = (item) => {
-    const existingItem = userCart.find((cartItem) => cartItem.id === item.id);
-    let updatedCart;
-
-    if (existingItem) {
-      updatedCart = userCart.map((cartItem) => {
-        if (cartItem.id === item.id) {
-          return {
-            ...cartItem,
-            quantity: cartItem.quantity + 1,
-          };
-        }
-        console.log("This is cart item", cartItem);
-        console.log(
-          "If Updated Cart When quantity is more than 1",
-          updatedCart,
-        );
-        return cartItem;
-      });
-    } else {
-      updatedCart = [
-        ...userCart,
-        {
-          id: item.id,
-          name: item.name,
-          price: Number(item.price),
-          image: item.image
-            ? `http://127.0.0.1:8000${item.image}`
-            : null,
-          description: item.description || "",
-          quantity: 1,
-        },
-      ];
-    }
-
-    localStorage.setItem("UserCart", JSON.stringify(updatedCart));
-    setUserCart(updatedCart);
-
+    dispatch(addToCart({
+      id: item.id,
+      name: item.name,
+      price: Number(item.price),
+      image: item.image,
+      description: item.description,
+    }));
     window.alert("Cart Updated");
   };
 

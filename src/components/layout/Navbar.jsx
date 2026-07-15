@@ -8,7 +8,8 @@ import { Menu, ChevronDown } from 'lucide-react';
 import ThemeToggle from '/src/components/common/ThemeToggle';
 import { HashLink } from "react-router-hash-link";
 import { useAuthModal } from "/src/context/AuthModalContext";
-import { useAuth } from "/src/context/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "/src/redux/authSlice";
 import { getRestaurants } from "/src/api/restaurantAPI";
 
 const navLinks = [
@@ -28,7 +29,8 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
 
   const { openLogin } = useAuthModal();
-  const { user, logout } = useAuth();
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -220,7 +222,7 @@ const Navbar = () => {
                   </div>
 
                   <button
-                    onClick={logout}
+                    onClick={() => dispatch(logout())}
                     className="text-brand-orange font-semibold"
                   >
                     Logout

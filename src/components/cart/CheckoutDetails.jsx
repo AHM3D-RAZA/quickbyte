@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { CheckCircle, CreditCard, DollarSign, Send, ArrowLeft, ShoppingBag } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart } from "/src/redux/cartSlice";
 
 export default function CheckoutDetails() {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([]);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [orderId, setOrderId] = useState("");
 
-  // Form states
   const [form, setForm] = useState({
     street: "123 Regent Street",
     apartment: "Apt 4B",
@@ -22,11 +25,6 @@ export default function CheckoutDetails() {
     cardCvv: "123",
   });
 
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("UserCart")) || [];
-    setCartItems(storedCart);
-  }, []);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -34,13 +32,10 @@ export default function CheckoutDetails() {
 
   const handlePlaceOrder = (e) => {
     e.preventDefault();
-    // Simulate placing order
     const randomOrderId = "QB-" + Math.floor(100000 + Math.random() * 900000);
     setOrderId(randomOrderId);
     setShowSuccessModal(true);
-
-    // Clear cart on success
-    localStorage.removeItem("UserCart");
+    dispatch(clearCart());
   };
 
   const subTotal = cartItems.reduce((total, item) => {

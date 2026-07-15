@@ -1,8 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "/src/context/AuthContext";
+import { useSelector } from "react-redux";
 
 const ProtectedRoute = () => {
-  const { isAuthenticated, loading } = useAuth();
+  const user = useSelector((state) => state.auth.user);
+  const loading = useSelector((state) => state.auth.loading);
+  const isAuthenticated = !!user;
 
   if (loading) {
     return <div>Loading...</div>;

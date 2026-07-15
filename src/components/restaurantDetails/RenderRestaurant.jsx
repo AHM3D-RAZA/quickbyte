@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import MenuItemCard from "/src/components/restaurantDetails/MenuItemCard";
 import { getMenuItems } from "/src/api/restaurantAPI";
+import { useDispatch } from "react-redux";
+import { addToCart } from "/src/redux/cartSlice";
 
 export default function RestaurantDetail({ restaurantId }) {
-  const [userCart, setUserCart] = useState([]);
+  const dispatch = useDispatch();
   const [restaurantItems, setRestaurantItems] = useState([]);
-
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("UserCart")) || [];
-    setUserCart(storedCart);
-  }, []);
 
 
   useEffect(() => {
@@ -50,43 +47,13 @@ export default function RestaurantDetail({ restaurantId }) {
   });
 
   const handleAddToCard = (item) => {
-    const existingItem = userCart.find((cartItem) => cartItem.id === item.id);
-    let updatedCart;
-
-    if (existingItem) {
-      updatedCart = userCart.map((cartItem) => {
-        if (cartItem.id === item.id) {
-          return {
-            ...cartItem,
-            quantity: cartItem.quantity + 1,
-          };
-        }
-        console.log("This is cart item", cartItem);
-        console.log(
-          "If Updated Cart When quantity is more than 1",
-          updatedCart,
-        );
-        return cartItem;
-      });
-    } else {
-      updatedCart = [
-        ...userCart,
-        {
-          id: item.id,
-          name: item.name,
-          price: Number(item.price),
-          image: item.image
-            ? `http://127.0.0.1:8000${item.image}`
-            : null,
-          description: item.description || "",
-          quantity: 1,
-        },
-      ];
-    }
-
-    localStorage.setItem("UserCart", JSON.stringify(updatedCart));
-    setUserCart(updatedCart);
-
+    dispatch(addToCart({
+      id: item.id,
+      name: item.name,
+      price: Number(item.price),
+      image: item.image ? `http://127.0.0.1:8000${item.image}` : null,
+      description: item.description,
+    }));
     window.alert("Cart Updated");
   };
 

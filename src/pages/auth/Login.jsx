@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '/src/assets/OrderUKLogo.png';
 import { login as loginAPI } from "/src/api/authAPI";
-import { useAuth } from "/src/context/AuthContext";
 import { useAuthModal } from "/src/context/AuthModalContext";
-
+import { useDispatch } from 'react-redux';
+import { login as loginAction } from "/src/redux/authSlice";
 
 const Login = ({ embedded = false }) => {
-  const { login } = useAuth();
+  const dispatch = useDispatch();
   const { close } = useAuthModal();
 
   const [error, setError] = useState("");
@@ -26,7 +26,7 @@ const Login = ({ embedded = false }) => {
   try {
     const response = await loginAPI(formData);
 
-    login(response);
+    dispatch(loginAction(response));
 
     close();
 

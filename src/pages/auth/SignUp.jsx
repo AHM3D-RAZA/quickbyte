@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { signup } from '/src/api/authAPI';
-import { useAuth } from "/src/context/AuthContext";
 import { useAuthModal } from "/src/context/AuthModalContext";
+import { useDispatch } from 'react-redux';
+import { login as loginAction } from "/src/redux/authSlice";
 import logo from '/src/assets/OrderUKLogo.png';
 
-
 const Signup = ({ embedded = false }) => {
-  const { login } = useAuth();
+  const dispatch = useDispatch();
   const { close } = useAuthModal();
 
   const [error, setError] = useState("");
@@ -35,7 +35,7 @@ const Signup = ({ embedded = false }) => {
     try {
       setError("");
       const response = await signup(formData);
-      login(response);
+      dispatch(loginAction(response));
       close();
     }
     catch(err){
