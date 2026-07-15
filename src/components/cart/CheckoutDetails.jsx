@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { CheckCircle, CreditCard, DollarSign, Send, ArrowLeft, ShoppingBag } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCart } from "/src/redux/cartSlice";
+import { clearCartLocally, checkoutCart } from "/src/redux/cartSlice";
 
 export default function CheckoutDetails() {
   const navigate = useNavigate();
@@ -12,6 +12,8 @@ export default function CheckoutDetails() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [orderError, setOrderError] = useState(null);
 
   const [form, setForm] = useState({
     street: "123 Regent Street",
@@ -25,17 +27,38 @@ export default function CheckoutDetails() {
     cardCvv: "123",
   });
 
+  const paymentMethodMap = {
+    cod: "cash",
+    card: "stripe", // placeholder — confirm with backend
+    stripe: "stripe",
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePlaceOrder = (e) => {
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
-    const randomOrderId = "QB-" + Math.floor(100000 + Math.random() * 900000);
-    setOrderId(randomOrderId);
-    setShowSuccessModal(true);
-    dispatch(clearCart());
+    setOrderError(null);
+    setIsPlacingOrder(true);
+
+    try {
+      const result = await dispatch(
+        checkoutCart({
+          delivery_address: `${form.street}, ${form.apartment}, ${form.city}, ${form.postcode}`,
+          payment_method: paymentMethodMap[paymentMethod],
+          transaction_id: paymentMethod !== "cod" ? form.cardNumber : undefined,
+        })
+      ).unwrap();
+
+      setOrderId(result.id ?? result.order_id ?? "");
+      setShowSuccessModal(true);
+    } catch (err) {
+      setOrderError("We couldn't place your order. Please check your details and try again.");
+    } finally {
+      setIsPlacingOrder(false);
+    }
   };
 
   const subTotal = cartItems.reduce((total, item) => {

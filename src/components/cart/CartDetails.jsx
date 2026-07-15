@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Trash2, Plus, Minus, Tag, ShoppingBag, ArrowRight } from "lucide-react";
 import Button from "/src/components/common/Button";
 
-export default function CartDetails({ cartItems, onIncrease, onDecrease, onDelete }) {
+export default function CartDetails({ cartItems = [], onIncrease, onDecrease, onDelete }) {
   const navigate = useNavigate();
 
   const subTotal = cartItems.reduce((total, item) => {
@@ -89,7 +89,7 @@ export default function CartDetails({ cartItems, onIncrease, onDecrease, onDelet
                     {/* Quantity Controls */}
                     <div className="flex items-center gap-3 bg-gray-100/80 rounded-full px-3 py-1.5 border border-gray-200">
                       <button
-                        onClick={() => onDecrease(item.id)}
+                        onClick={() => onDecrease(item)}
                         className="text-gray-600 hover:text-brand-orange transition-colors p-1"
                         aria-label="Decrease quantity"
                       >
@@ -99,7 +99,7 @@ export default function CartDetails({ cartItems, onIncrease, onDecrease, onDelet
                         {item.quantity}
                       </span>
                       <button
-                        onClick={() => onIncrease(item.id)}
+                        onClick={() => onIncrease(item)}
                         className="text-gray-600 hover:text-brand-orange transition-colors p-1"
                         aria-label="Increase quantity"
                       >

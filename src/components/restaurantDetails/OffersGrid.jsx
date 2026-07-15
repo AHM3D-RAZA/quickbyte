@@ -2,10 +2,9 @@ import OfferCard from "./OfferCard";
 import { getDeals } from "/src/api/restaurantAPI";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addToCart } from "/src/redux/cartSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { addItemToCart } from "../../redux/cartSlice";
 
 function OffersGrid({ restaurantId }) {
   const dispatch = useDispatch();
@@ -32,16 +31,10 @@ function OffersGrid({ restaurantId }) {
 
   const handleAddToCard = (item) => {
     if (!user) {
-        openLogin();
-        return;
+      openLogin();
+      return;
     }
-    dispatch(addToCart({
-      id: item.id,
-      name: item.name,
-      price: Number(item.price),
-      image: item.image ? `http://127.0.0.1:8000${item.image}` : null,
-      description: item.description,
-    }));
+    dispatch(addItemToCart({ dealId: item.id }));
     window.alert("Cart Updated");
   };
 

@@ -5,8 +5,8 @@ import DealBreadcrumb from "./Breadcrumb";
 import DealGallery from "./ImageGallery";
 import DealInfoPanel from "./InfoPanel";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../redux/cartSlice";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { addItemToCart } from "../../redux/cartSlice";
 
 export default function DealDetailPage() {
   const { dealId } = useParams();
@@ -69,14 +69,7 @@ export default function DealDetailPage() {
       openLogin();
       return;
     }
-
-    dispatch(addToCart({
-      id: item.id,
-      name: item.name,
-      price: Number(item.price),
-      image: item.image,
-      description: item.description,
-    }));
+    dispatch(addItemToCart({ dealId: item.id }));
     window.alert("Cart Updated");
   };
 

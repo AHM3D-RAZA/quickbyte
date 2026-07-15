@@ -3,10 +3,9 @@ import Navbar from '/src/components/layout/Navbar'
 import Footer from '/src/components/layout/Footer'
 import { useParams } from 'react-router-dom';
 import { getMenuItems } from '../../api/restaurantAPI';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../../redux/cartSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useAuthModal } from '../../context/AuthModalContext';
+import { addItemToCart } from '../../redux/cartSlice';
 
 const CategoryItems = () => {
   const { categoryId } = useParams();
@@ -14,20 +13,6 @@ const CategoryItems = () => {
   const user = useSelector(state => state.auth.user);
   const { openLogin } = useAuthModal();
   const dispatch = useDispatch();
-
-  const handleAddToCart = (item) => {
-    if(!user) {
-      openLogin();
-      return;
-    }
-    dispatch(addToCart({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      image: item.image ? `http://127.0.0.1:8000${item.image}` : null,
-    }));
-    alert("Added to cart!");
-  };
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -41,6 +26,15 @@ const CategoryItems = () => {
 
     fetchMenuItems();
   }, []);
+
+  const handleAddToCart = (item) => {
+    if (!user) {
+      openLogin();
+      return;
+    }
+    dispatch(addItemToCart({ menuItemId: item.id }));
+    alert("Added to cart!");
+  };
 
   const categoryItems = menuItems.filter(
     (item) => item.category?.id == categoryId

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import MenuItemCard from "/src/components/restaurantDetails/MenuItemCard";
 import { getMenuItems } from "/src/api/restaurantAPI";
-import { useDispatch } from "react-redux";
-import { addToCart } from "/src/redux/cartSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { addItemToCart } from "/src/redux/cartSlice";
 
 export default function RestaurantDetail({ restaurantId }) {
   const dispatch = useDispatch();
@@ -51,17 +50,11 @@ export default function RestaurantDetail({ restaurantId }) {
   });
 
   const handleAddToCard = (item) => {
-    if(!user) {
+    if (!user) {
       openLogin();
       return;
     }
-    dispatch(addToCart({
-      id: item.id,
-      name: item.name,
-      price: Number(item.price),
-      image: item.image ? `http://127.0.0.1:8000${item.image}` : null,
-      description: item.description,
-    }));
+    dispatch(addItemToCart({ menuItemId: item.id }));
     window.alert("Cart Updated");
   };
 
