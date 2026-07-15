@@ -3,9 +3,13 @@ import MenuItemCard from "/src/components/restaurantDetails/MenuItemCard";
 import { getMenuItems } from "/src/api/restaurantAPI";
 import { useDispatch } from "react-redux";
 import { addToCart } from "/src/redux/cartSlice";
+import { useSelector } from "react-redux";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 export default function RestaurantDetail({ restaurantId }) {
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
+  const { openLogin } = useAuthModal();
   const [restaurantItems, setRestaurantItems] = useState([]);
 
 
@@ -47,6 +51,10 @@ export default function RestaurantDetail({ restaurantId }) {
   });
 
   const handleAddToCard = (item) => {
+    if(!user) {
+      openLogin();
+      return;
+    }
     dispatch(addToCart({
       id: item.id,
       name: item.name,

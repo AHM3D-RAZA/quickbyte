@@ -4,9 +4,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "/src/redux/cartSlice";
+import { useSelector } from "react-redux";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 function OffersGrid({ restaurantId }) {
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
+  const { openLogin } = useAuthModal();
   const [offers, setOffers] = useState([]);
   const navigate = useNavigate();
 
@@ -27,6 +31,10 @@ function OffersGrid({ restaurantId }) {
   );
 
   const handleAddToCard = (item) => {
+    if (!user) {
+        openLogin();
+        return;
+    }
     dispatch(addToCart({
       id: item.id,
       name: item.name,

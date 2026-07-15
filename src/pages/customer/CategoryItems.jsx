@@ -5,13 +5,21 @@ import { useParams } from 'react-router-dom';
 import { getMenuItems } from '../../api/restaurantAPI';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
+import { useSelector } from 'react-redux';
+import { useAuthModal } from '../../context/AuthModalContext';
 
 const CategoryItems = () => {
   const { categoryId } = useParams();
   const [menuItems, setMenuItems] = useState([]);
+  const user = useSelector(state => state.auth.user);
+  const { openLogin } = useAuthModal();
   const dispatch = useDispatch();
 
   const handleAddToCart = (item) => {
+    if(!user) {
+      openLogin();
+      return;
+    }
     dispatch(addToCart({
       id: item.id,
       name: item.name,

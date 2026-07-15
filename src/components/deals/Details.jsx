@@ -6,12 +6,15 @@ import DealGallery from "./ImageGallery";
 import DealInfoPanel from "./InfoPanel";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/cartSlice";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 export default function DealDetailPage() {
   const { dealId } = useParams();
   const userCart = useSelector((state) => state.cart.items);
+  const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
   const [deal, setDeal] = useState(null);
+  const { openLogin } = useAuthModal();
 
   useEffect(() => {
     const fetchDeal = async () => {
@@ -62,6 +65,11 @@ export default function DealDetailPage() {
   };
 
   const handleAddToCard = (item) => {
+    if (!user) {
+      openLogin();
+      return;
+    }
+
     dispatch(addToCart({
       id: item.id,
       name: item.name,
