@@ -8,6 +8,16 @@ const CategoryItems = () => {
   const { categoryId } = useParams();
   const [menuItems, setMenuItems] = useState([]);
 
+  const addToCart = (item) => {
+    const cart = JSON.parse(localStorage.getItem("UserCart")) || [];
+    const existing = cart.find((c) => c.id === item.id);
+    const updated = existing
+      ? cart.map((c) => c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c)
+      : [...cart, { id: item.id, name: item.name, price: Number(item.price), image: `http://127.0.0.1:8000${item.image}`, quantity: 1 }];
+    localStorage.setItem("UserCart", JSON.stringify(updated));
+    alert("Added to cart!");
+  };
+
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
@@ -74,9 +84,15 @@ const CategoryItems = () => {
                     {item.name}
                   </h3>
 
-                  <p className="text-[#FC8A06] font-semibold mt-2">
-                    ${item.price}
-                  </p>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-[#FC8A06] font-semibold">${item.price}</p>
+                    <button
+                      onClick={() => addToCart(item)}
+                      className="bg-[#FC8A06] text-white text-sm font-bold px-3 py-1 rounded-full hover:bg-[#e57c05] transition-colors"
+                    >
+                      + Add
+                    </button>
+                  </div>
 
                 </div>
               </div>
