@@ -59,10 +59,10 @@ export default function RestaurantDetail({ restaurantId }) {
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-2 p-3">
+    <div className="px-12 max-w-6xl space-y-2 p-3">
 
       {/* Restaurant Categories With Items */}
-      <div className="space-y-14">
+      <div className="space-y-10">
         {categories.map((category) => (
           <section key={category.id} id={`category-${category.id}`}>
             <h2 className="mb-6 text-[32px] font-bold text-[#03081F]">

@@ -15,6 +15,7 @@ import Cart from "/src/pages/customer/Cart";
 import CheckoutPage from "/src/pages/customer/CheckoutPage";
 import CategoryItems from "/src/pages/customer/CategoryItems";
 import DealDetails from "./pages/customer/DealDetails";
+import TrackOrder from "./pages/customer/TrackOrder";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/popup" element={<ForPopupTest />} />
         <Route path="/category/:categoryId" element={<CategoryItems />} />
         <Route path="/deal/:dealId" element={<DealDetails />} />
+        <Route path="/orders/track" element={<TrackOrder />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />

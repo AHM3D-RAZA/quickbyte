@@ -66,7 +66,7 @@ export default function CartDetails({ cartItems = [], onIncrease, onDecrease, on
                 >
                   <div className="flex items-start gap-4">
                     <img
-                      src={item.image || "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60"}
+                      src={`http://127.0.0.1:8000${item.image}` || "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=60"}
                       alt={item.name}
                       className="h-20 w-20 rounded-xl object-cover border border-gray-100 shrink-0"
                     />

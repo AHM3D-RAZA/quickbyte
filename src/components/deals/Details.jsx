@@ -78,7 +78,7 @@ export default function DealDetailPage() {
       <div className="max-w-6xl mx-auto px-6 py-8">
         <DealBreadcrumb category="Deals" dealName={dealData.name} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          <DealGallery images={dealData.image} discount="25% OFF" />
+          <DealGallery image={dealData.image} discount="25% OFF" />
           <DealInfoPanel
             deal={dealData}
             onAddToCart={(qty) => handleAddToCard(dealData)}

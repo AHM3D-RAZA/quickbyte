@@ -22,6 +22,7 @@ const navLinks = [
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const cartItems = useSelector(state => state.cart.items);
   const [menuOpen, setMenuOpen] = useState(false);
   const [restaurants, setRestaurants] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -55,6 +56,16 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const totalItems = cartItems.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+  const totalPrice = cartItems.reduce(
+    (sum, item) =>
+        sum + item.price * item.quantity,
+    0
+  );
   
   return (
     <div>
@@ -95,29 +106,34 @@ const Navbar = () => {
 
               {/* Basket */}
               <div className="flex items-center bg-brand-green border border-black/10 rounded-br-card text-white font-body h-full w-[378px]">
-                <div className="flex items-center justify-center px-2 flex-1">
-                  <img
-                    src={basketIcon}
-                    alt="Basket"
-                    className="w-[43px] h-[43px] object-contain"
-                  />
-                </div>
+                <button onClick={() => navigate('/cart')}
+                  className='px-2 flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer'>
+                  <div className="flex items-center justify-center px-2 flex-1">
+                    <img
+                      src={basketIcon}
+                      alt="Basket"
+                      className="w-[43px] h-[43px] object-contain"
+                    />
+                  </div>
+                </button>
 
                 <div className="h-full w-px bg-white/30" />
 
                 <div className="w-[112px] flex items-center justify-center font-semibold text-[16px]">
-                  23 Items
+                  {totalItems} Items
                 </div>
 
                 <div className="h-full w-px bg-white/30" />
 
                 <div className="flex items-center justify-center w-[116px] font-semibold text-[16px]">
-                  GBP 79.89
+                  ${totalPrice.toFixed(2)}
                 </div>
 
                 <div className="h-full w-px bg-white/30" />
 
-                <button className="flex-1 h-full flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer rounded-br-card">
+                <button 
+                  onClick={() => navigate('/checkout')}
+                  className="flex-1 h-full flex items-center justify-center hover:bg-black/10 transition-colors cursor-pointer rounded-br-card">
                   <img
                     src={arrowDownIcon}
                     alt="Go to checkout"
