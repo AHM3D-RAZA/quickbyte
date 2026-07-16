@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import StatusPill from "../shared/StatusPill";
 
-export default function OrderStatusActions({ order, onUpdateStatus }) {
+export function OrderStatusActions({ order, onUpdateStatus }) {
   const { order_id, current_status } = order;
 
   return (
@@ -77,11 +77,15 @@ export function OrdersTable({ orders, onUpdateStatus }) {
             {orders.map((order) => (
               <tr key={order.order_id} className="hover:bg-gray-50/30 transition-colors">
                 <td className="px-6 py-4 font-mono font-bold text-brand-dark">{order.order_id}</td>
-                <td className="px-6 py-4 font-semibold">{order.customer}</td>
-                <td className="px-6 py-4 text-gray-600">{order.restaurant}</td>
-                <td className="px-6 py-4 text-gray-500 text-xs truncate max-w-xs">{order.items}</td>
+                <td className="px-6 py-4 font-semibold">{order.status_history?.[0]?.changed_by?.username}</td>
+                <td className="px-6 py-4 text-gray-600">{order.restaurant?.name}</td>
+                <td className="px-6 py-4 text-gray-500 text-xs truncate max-w-xs">
+                  {order.items
+                  ?.map(item => `${item.quantity}× ${item.name}`)
+                  .join(", ")}
+                </td>
                 <td className="px-6 py-4 font-bold text-brand-dark">
-                  £{order.total_price.toFixed(2)}
+                  £{Number(order.total_price).toFixed(2)}
                 </td>
                 <td className="px-6 py-4">
                   <StatusPill status={order.current_status} variant="order" />

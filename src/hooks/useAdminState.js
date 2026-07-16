@@ -1,5 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ACTIVE_ORDER_STATUSES } from "../components/admin/constants";
+import {
+  getAnalyticsOverview,
+  getAllOrders,
+  updateOrderStatus,
+  createRestaurant,
+  editRestaurant,
+  deleteRestaurant,
+  createCategory,
+  editCategory,
+  deleteCategory,
+  createMenuItem,
+  editMenuItem,
+  deleteMenuItem,
+  createDeal,
+  editDeal,
+  deleteDeal,
+} from "/src/api/adminAPI";
+
 
 const INITIAL_ORDERS = [
   { order_id: "QB-9482", customer: "Sarah Jenkins", restaurant: "Pizza Express", items: "1x Margherita, 1x Garlic Bread", total_price: 18.5, current_status: "pending", created_at: "2026-07-13T16:10:00Z" },
@@ -37,7 +55,7 @@ const INITIAL_DEALS = [
 
 export default function useAdminState() {
   const [activeTab, setActiveTab] = useState("overview");
-  const [orders, setOrders] = useState(INITIAL_ORDERS);
+  const [orders, setOrders] = useState([]);
   const [restaurants, setRestaurants] = useState(INITIAL_RESTAURANTS);
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [menuItems, setMenuItems] = useState(INITIAL_MENU_ITEMS);
@@ -51,6 +69,29 @@ export default function useAdminState() {
   const [categoryForm, setCategoryForm] = useState({ name: "", slug: "" });
   const [menuitemForm, setMenuitemForm] = useState({ name: "", restaurant: "", category: "", price: "", description: "" });
   const [dealForm, setDealForm] = useState({ title: "", description: "", discount_percentage: "", status: "Active" });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const loadOrders = async () => {
+        try {
+          setLoading(true);
+
+          const data = await getAllOrders();
+
+          setOrders(data);
+
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+  useEffect(() => {
+    loadOrders();
+  }, []);
 
   const openModal = (type, item = null) => {
     setModalType(type);
@@ -79,10 +120,15 @@ export default function useAdminState() {
     setSelectedItem(null);
   };
 
-  const handleUpdateOrderStatus = (orderId, newStatus) => {
-    setOrders((prev) =>
-      prev.map((o) => (o.order_id === orderId ? { ...o, current_status: newStatus } : o))
-    );
+  const handleUpdateOrderStatus = async (orderId, newStatus) => {
+      try {
+        await updateOrderStatus(orderId, newStatus);
+
+        await loadOrders();
+
+      } catch (err) {
+        console.error(err);
+      }
   };
 
   const handleRestaurantSubmit = (e) => {
@@ -164,8 +210,11 @@ export default function useAdminState() {
   };
 
   const deliveredSales = orders
-    .filter((o) => o.current_status === "delivered")
-    .reduce((sum, o) => sum + o.total_price, 0);
+      .filter(o => o.current_status === "delivered")
+      .reduce(
+          (sum, o) => sum + Number(o.total_price),
+          0
+      );
 
   const activeOrdersCount = orders.filter((o) =>
     ACTIVE_ORDER_STATUSES.includes(o.current_status)
