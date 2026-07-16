@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 
-import useOrders from "/src/components/hooks/useOrders";
+import useOrders from "/src/hooks/useOrders";
 import OrderSidebar from "/src/components/orders/OrderSidebar";
 import OrderStepper from "/src/components/orders/OrderStepper";
 import OrderItems from "/src/components/orders/OrderItems";

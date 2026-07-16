@@ -1,0 +1,129 @@
+import api from "./axios";
+
+// Analytics
+export const getAnalyticsOverview = async () => {
+    const response = await api.get("/order/admin/analytics/overview/");
+    return response.data.data;
+};
+
+export const getOrderStatusAnalytics = async () => {
+    const response = await api.get("/order/admin/analytics/orders-by-status/");
+    return response.data.data;
+};
+
+export const getRevenueByRestaurant = async () => {
+    const response = await api.get("/order/admin/analytics/revenue-by-restaurant/");
+    return response.data.data;
+};
+
+export const getRevenueOverTime = async () => {
+    const response = await api.get("/order/admin/analytics/revenue-over-time/");
+    return response.data.data;
+};
+
+export const getPopularDeals = async () => {
+    const response = await api.get("/order/admin/analytics/popular-deals/");
+    return response.data.data;
+};
+
+export const getPopularItems = async () => {
+    const response = await api.get("/order/admin/analytics/popular-items/");
+    return response.data.data;
+};
+
+
+//Orders
+export const getAllOrders = async () => {
+    const response = await api.get("/order/admin/orders");
+    return response.data.data;
+};
+
+export const updateOrderStatus = async (orderId, status) => {
+    const response = await api.patch(
+        `/order/admin/orders/${orderId}/status/`,
+        { status }
+    );
+    return response.data.data;
+};
+
+
+//Categories
+export const createCategory = async (categoryData) => {
+    const response = await api.post("/restaurants/create-category/", categoryData);
+    return response.data.data;
+};
+
+export const deleteCategory = async (categoryId) => {
+    const response = await api.delete(`/restaurants/delete-category/${categoryId}/`);
+    return response.data.data;
+};
+
+export const editCategory = async (categoryId, categoryData) => {
+    const response = await api.patch(`/restaurants/update-category/${categoryId}/`, categoryData);
+    return response.data.data;
+};
+
+//Deals
+export const createDealItem = async (dealItemData) => {
+    const response = await api.post("/restaurants/create-deal-item/", dealItemData);
+    return response.data.data;
+};
+
+export const createDeal = async (dealData) => {
+    const response = await api.post("/restaurants/create-deal/", dealData);
+    return response.data.data;
+};
+
+export const deleteDealItem = async (itemId) => {
+    const response = await api.delete(`/restaurants/delete-deal-item/${itemId}/`);
+    return response.data.data;
+};
+
+export const deleteDeal = async (dealId) => {
+    const response = await api.delete(`/restaurants/delete-deal/${dealId}/`);
+    return response.data.data;
+};
+
+export const editDealItem = async (itemId, itemData) => {
+    const response = await api.patch(`/restaurants/update-deal-item/${itemId}/`, itemData);
+    return response.data.data;
+};
+
+export const editDeal = async (dealId, dealData) => {
+    const response = await api.patch(`/restaurants/update-deal/${dealId}/`, dealData);
+    return response.data.data;
+};
+
+//MenuItems
+export const createMenuItem = async (menuItemData) => {
+    const response = await api.post("/restaurants/create-menuitem/", menuItemData);
+    return response.data.data;
+};
+
+export const deleteMenuItem = async (menuId) => {
+    const response = await api.delete(`/restaurants/delete-menuitem/${menuId}/`);
+    return response.data.data;
+};
+
+export const editMenuItem = async (menuId, menuData) => {
+    const response = await api.patch(`/restaurants/update-menuitem/${menuId}/`, menuData);
+    return response.data.data;
+};
+
+//Restuarants
+export const createRestaurant = async (restaurantData) => {
+    const response = await api.post(
+        "/restaurants/create-restaurant/",restaurantData);
+    return response.data.data;
+};
+
+export const deleteRestaurant = async (restaurantId) => {
+    const response = await api.delete(
+        `/restaurants/delete-restaurant/${restaurantId}/`);
+    return response.data.data;
+};
+
+export const editRestaurant = async (restaurantId, restaurantData) => {
+    const response = await api.patch(`/restaurants/update-restaurant/${restaurantId}/`, restaurantData);
+    return response.data.data;
+};
