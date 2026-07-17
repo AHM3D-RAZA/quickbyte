@@ -17,36 +17,8 @@ import {
   editDeal,
   deleteDeal,
 } from "/src/api/adminAPI";
-
-
-const INITIAL_ORDERS = [
-  { order_id: "QB-9482", customer: "Sarah Jenkins", restaurant: "Pizza Express", items: "1x Margherita, 1x Garlic Bread", total_price: 18.5, current_status: "pending", created_at: "2026-07-13T16:10:00Z" },
-  { order_id: "QB-9481", customer: "David Miller", restaurant: "Burger Joint", items: "2x Cheeseburger, 1x Large Fries", total_price: 24.9, current_status: "preparing", created_at: "2026-07-13T15:55:00Z" },
-  { order_id: "QB-9480", customer: "Emma Watson", restaurant: "Sushi Wok", items: "1x Salmon Roll, 1x Miso Soup", total_price: 15.2, current_status: "delivered", created_at: "2026-07-13T15:12:00Z" },
-  { order_id: "QB-9479", customer: "Michael Brown", restaurant: "Taco Loco", items: "3x Beef Tacos, 1x Nachos", total_price: 22.0, current_status: "cancelled", created_at: "2026-07-13T14:40:00Z" },
-];
-
-const INITIAL_RESTAURANTS = [
-  { id: 1, name: "Pizza Express", cuisines: "Italian, Pizza", address: "45 Regent St, London", rating: 4.7, status: "Active" },
-  { id: 2, name: "Burger Joint", cuisines: "Burgers, Fast Food", address: "12 Piccadilly Circus, London", rating: 4.5, status: "Active" },
-  { id: 3, name: "Sushi Wok", cuisines: "Japanese, Sushi", address: "88 Soho W1D, London", rating: 4.8, status: "Active" },
-  { id: 4, name: "Taco Loco", cuisines: "Mexican, Street Food", address: "31 Camden High St, London", rating: 4.2, status: "Inactive" },
-];
-
-const INITIAL_CATEGORIES = [
-  { id: 1, name: "Pizza", slug: "pizza" },
-  { id: 2, name: "Burgers", slug: "burgers" },
-  { id: 3, name: "Sushi", slug: "sushi" },
-  { id: 4, name: "Sides", slug: "sides" },
-  { id: 5, name: "Drinks", slug: "drinks" },
-];
-
-const INITIAL_MENU_ITEMS = [
-  { id: 101, name: "Margherita Pizza", restaurant: "Pizza Express", category: "Pizza", price: 10.5, description: "Classic tomato sauce, fresh mozzarella, and basil leaves." },
-  { id: 102, name: "Cheeseburger", restaurant: "Burger Joint", category: "Burgers", price: 8.9, description: "Flame-grilled beef patty, cheddar cheese, pickles, and burger sauce." },
-  { id: 103, name: "Salmon Roll (8pcs)", restaurant: "Sushi Wok", category: "Sushi", price: 12.0, description: "Fresh Scottish salmon, avocado, cucumber, and sesame seeds." },
-  { id: 104, name: "Large Fries", restaurant: "Burger Joint", category: "Sides", price: 3.5, description: "Crispy golden french fries salted to perfection." },
-];
+import { getCategories, getPopularDeals, getPopularItems, getRestaurants } from "../api/adminAPI";
+import { getMenuItems } from "../api/restaurantAPI";
 
 const INITIAL_DEALS = [
   { id: 201, title: "Double Deal Wednesday", description: "Buy 1 Get 1 Free on all Medium Pizzas.", discount_percentage: 50, status: "Active" },
@@ -55,32 +27,107 @@ const INITIAL_DEALS = [
 
 export default function useAdminState() {
   const [activeTab, setActiveTab] = useState("overview");
+  const [popularItems, setPopularItems] = useState([]);
+  const [popularDeals, setPopularDeals] = useState([]);
+
   const [orders, setOrders] = useState([]);
-  const [restaurants, setRestaurants] = useState(INITIAL_RESTAURANTS);
-  const [categories, setCategories] = useState(INITIAL_CATEGORIES);
-  const [menuItems, setMenuItems] = useState(INITIAL_MENU_ITEMS);
+
+  const [restaurants, setRestaurants] = useState();
+  const [categories, setCategories] = useState();
+  const [menuItems, setMenuItems] = useState();
   const [deals, setDeals] = useState(INITIAL_DEALS);
+
+  const [analytics, setAnalytics] = useState({
+    total_orders: 0,
+    total_revenue: 0,
+    active_restaurants: 0,
+    total_users: 0,
+  });
 
   const [modalType, setModalType] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [restaurantForm, setRestaurantForm] = useState({ name: "", cuisines: "", address: "", status: "Active" });
-  const [categoryForm, setCategoryForm] = useState({ name: "", slug: "" });
-  const [menuitemForm, setMenuitemForm] = useState({ name: "", restaurant: "", category: "", price: "", description: "" });
+  const [restaurantForm, setRestaurantForm] = useState({ name: "", description: "", address: "", image: null, is_active: true, is_featured: false });
+  const [categoryForm, setCategoryForm] = useState({ name: "" });
+  const [menuitemForm, setMenuitemForm] = useState({ name: "", restaurant: "", category: "", price: "", description: "", image: null });
   const [dealForm, setDealForm] = useState({ title: "", description: "", discount_percentage: "", status: "Active" });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const loadOverview = async () => {
+        try {
+          setLoading(true);
+          const data = await getAnalyticsOverview();
+          setAnalytics(data);
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+  const loadPopularItemsAndDeals = async () => {
+        try {
+          setLoading(true);
+          const items = await getPopularItems();
+          const deals = await getPopularDeals();
+          setPopularItems(items);
+          setPopularDeals(deals);
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+
   const loadOrders = async () => {
         try {
           setLoading(true);
-
           const data = await getAllOrders();
-
           setOrders(data);
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      };
 
+  const loadRestaurants = async () => {
+        try {
+          setLoading(true);
+          const data = await getRestaurants();
+          setRestaurants(data);
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+  const loadMenuItems = async () => {
+        try {
+          setLoading(true);
+          const data = await getMenuItems();
+          setMenuItems(data);
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+  const loadCategories = async () => {
+        try {
+          setLoading(true);
+          const data = await getCategories();
+          setCategories(data);
         } catch (err) {
           console.error(err);
           setError(err);
@@ -90,26 +137,51 @@ export default function useAdminState() {
       };
   
   useEffect(() => {
-    loadOrders();
+    Promise.all([
+      loadOverview(),
+      loadPopularItemsAndDeals(),
+      loadOrders(),
+      loadRestaurants(),
+      loadMenuItems(),
+      loadCategories()
+    ]);
   }, []);
 
   const openModal = (type, item = null) => {
     setModalType(type);
     setSelectedItem(item);
+    console.log('eh', item);
     if (item) {
-      if (type.includes("restaurant")) setRestaurantForm(item);
-      else if (type.includes("category")) setCategoryForm(item);
-      else if (type.includes("menuitem")) setMenuitemForm(item);
+      if (type.includes("restaurant")) setRestaurantForm({
+          name: item.name || "",
+          description: item.description || "",
+          address: item.address || "",
+          image: item.image || null,
+          is_active: item.is_active ?? false,
+          is_featured: item.is_featured ?? false,
+      });
+      else if (type.includes("category")) setCategoryForm({
+        name: item.name || "",
+      });
+      else if (type.includes("menuitem")) setMenuitemForm({
+          name: item.name || "",
+          description: item.description || "",
+          restaurant: item.restaurant?.id || "",
+          image: item.image || null,
+          price: item.price || "",
+          category: item.category?.id || "",
+      });
       else if (type.includes("deal")) setDealForm(item);
     } else {
-      setRestaurantForm({ name: "", cuisines: "", address: "", status: "Active" });
-      setCategoryForm({ name: "", slug: "" });
+      setRestaurantForm({ name: "", description: "", address: "", image: null, is_active: true, is_featured: false });
+      setCategoryForm({ name: "", });
       setMenuitemForm({
-        name: "",
-        restaurant: restaurants[0]?.name || "",
-        category: categories[0]?.name || "",
-        price: "",
-        description: "",
+              name: "",
+              restaurant: "",
+              category: "",
+              price: "",
+              description: "",
+              image: null,
       });
       setDealForm({ title: "", description: "", discount_percentage: "", status: "Active" });
     }
@@ -123,68 +195,113 @@ export default function useAdminState() {
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
       try {
         await updateOrderStatus(orderId, newStatus);
-
         await loadOrders();
-
       } catch (err) {
         console.error(err);
       }
   };
 
-  const handleRestaurantSubmit = (e) => {
+  const handleRestaurantSubmit = async (e) => {
     e.preventDefault();
-    if (selectedItem) {
-      setRestaurants((prev) =>
-        prev.map((r) => (r.id === selectedItem.id ? { ...r, ...restaurantForm } : r))
-      );
+    try{
+      if (selectedItem) {
+      await editRestaurant(
+                selectedItem.id,
+                restaurantForm
+            );
     } else {
-      setRestaurants((prev) => [...prev, { id: Date.now(), ...restaurantForm, rating: 5.0 }]);
+      await createRestaurant(
+                restaurantForm
+            );
     }
+    await loadRestaurants();
     closeModal();
+    } 
+    catch (err) {
+      console.log(err.response?.data);
+      console.error(err);
+    }
   };
 
-  const handleDeleteRestaurant = (id) => {
+  const handleDeleteRestaurant = async (id) => {
     if (window.confirm("Are you sure you want to delete this restaurant?")) {
-      setRestaurants((prev) => prev.filter((r) => r.id !== id));
+      try{
+        await deleteRestaurant(id);
+        await loadRestaurants();
+
+      } catch (err){
+        console.error(err)
+        alert("Failed to delete the restaurant!");
+      }
     }
   };
 
-  const handleCategorySubmit = (e) => {
+  const handleCategorySubmit = async (e) => {
     e.preventDefault();
-    if (selectedItem) {
-      setCategories((prev) =>
-        prev.map((c) => (c.id === selectedItem.id ? { ...c, ...categoryForm } : c))
-      );
+    try{
+      if (selectedItem) {
+      await editCategory(
+                selectedItem.id,
+                categoryForm
+            );
     } else {
-      setCategories((prev) => [...prev, { id: Date.now(), ...categoryForm }]);
+      await createCategory(
+                categoryForm
+            );
     }
+    await loadCategories();
     closeModal();
+    } 
+    catch (err) {
+      console.log(err.response?.data);
+      console.error(err);
+    }
   };
 
-  const handleDeleteCategory = (id) => {
+  const handleDeleteCategory = async (id) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
-      setCategories((prev) => prev.filter((c) => c.id !== id));
+      try{
+        await deleteCategory(id);
+        await loadCategories();
+      } catch (err){
+        console.error(err)
+        alert("Failed to delete the category!");
+      }
     }
   };
 
-  const handleMenuitemSubmit = (e) => {
+  const handleMenuitemSubmit = async (e) => {
     e.preventDefault();
-    const formattedPrice = parseFloat(menuitemForm.price) || 0;
-    if (selectedItem) {
-      setMenuItems((prev) =>
-        prev.map((item) =>
-          item.id === selectedItem.id ? { ...item, ...menuitemForm, price: formattedPrice } : item
-        )
-      );
+    try{
+      if (selectedItem) {
+      await editMenuItem(
+                selectedItem.id,
+                menuitemForm
+            );
     } else {
-      setMenuItems((prev) => [...prev, { id: Date.now(), ...menuitemForm, price: formattedPrice }]);
+      await createMenuItem(
+                menuitemForm
+            );
     }
+    await loadMenuItems();
     closeModal();
+    } 
+    catch (err) {
+      console.log(err.response?.data);
+      console.error(err);
+    }
   };
 
-  const handleDeleteMenuitem = (id) => {
+  const handleDeleteMenuitem = async (id) => {
     if (window.confirm("Are you sure you want to delete this menu item?")) {
-      setMenuItems((prev) => prev.filter((item) => item.id !== id));
+      try{
+        await deleteMenuItem(id);
+        await loadMenuItems();
+
+      } catch (err){
+        console.error(err)
+        alert("Failed to delete the menu item!");
+      }
     }
   };
 
@@ -209,17 +326,6 @@ export default function useAdminState() {
     }
   };
 
-  const deliveredSales = orders
-      .filter(o => o.current_status === "delivered")
-      .reduce(
-          (sum, o) => sum + Number(o.total_price),
-          0
-      );
-
-  const activeOrdersCount = orders.filter((o) =>
-    ACTIVE_ORDER_STATUSES.includes(o.current_status)
-  ).length;
-
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setSearchQuery("");
@@ -230,6 +336,9 @@ export default function useAdminState() {
     setActiveTab,
     handleTabChange,
     orders,
+    analytics,
+    popularItems,
+    popularDeals,
     restaurants,
     categories,
     menuItems,
@@ -257,7 +366,5 @@ export default function useAdminState() {
     handleDeleteMenuitem,
     handleDealSubmit,
     handleDeleteDeal,
-    deliveredSales,
-    activeOrdersCount,
   };
 }

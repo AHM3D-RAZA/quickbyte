@@ -33,36 +33,78 @@ export function RestaurantFormModal({
           />
         </div>
         <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Cuisines</label>
-          <input
-            type="text"
-            required
-            placeholder="e.g. Burgers, Pizza"
-            value={form.cuisines}
-            onChange={(e) => onChange({ ...form, cuisines: e.target.value })}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-brand-orange focus:outline-none"
+          <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
+            Description
+          </label>
+          <textarea
+            rows={4}
+            value={form.description}
+            onChange={(e) =>
+              onChange({ ...form, description: e.target.value })
+            }
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-brand-orange focus:outline-none resize-none"
           />
         </div>
         <div>
           <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Address</label>
           <input
             type="text"
-            required
             value={form.address}
             onChange={(e) => onChange({ ...form, address: e.target.value })}
             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-brand-orange focus:outline-none"
           />
         </div>
         <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Status</label>
-          <select
-            value={form.status}
-            onChange={(e) => onChange({ ...form, status: e.target.value })}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-brand-orange focus:outline-none bg-white"
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
+          <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
+            Restaurant Image
+          </label>
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) =>
+              onChange({
+                ...form,
+                image: e.target.files[0],
+              })
+            }
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+          />
+        </div>
+        <div className="flex flex-col gap-3">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={!!form.is_active}
+              onChange={(e) =>
+                onChange({
+                  ...form,
+                  is_active: e.target.checked,
+                })
+              }
+              className="h-4 w-4"
+            />
+            <span className="text-sm font-medium text-gray-700">
+              Active Restaurant
+            </span>
+          </label>
+
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={!!form.is_featured}
+              onChange={(e) =>
+                onChange({
+                  ...form,
+                  is_featured: e.target.checked,
+                })
+              }
+              className="h-4 w-4"
+            />
+            <span className="text-sm font-medium text-gray-700">
+              Featured Restaurant
+            </span>
+          </label>
         </div>
         <div className="flex justify-end gap-2 pt-2">
           <button
@@ -111,24 +153,19 @@ export default function RestaurantsTab({
           <table className="w-full text-left text-sm border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200/80 text-gray-500 font-bold text-xs uppercase tracking-wider">
+                <th className="px-6 py-4">Image</th>
                 <th className="px-6 py-4">Restaurant</th>
-                <th className="px-6 py-4">Cuisines</th>
-                <th className="px-6 py-4">Address</th>
-                <th className="px-6 py-4">Rating</th>
-                <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {restaurants.map((r) => (
                 <tr key={r.id} className="hover:bg-gray-50/30 transition-colors">
-                  <td className="px-6 py-4 font-bold text-brand-dark">{r.name}</td>
-                  <td className="px-6 py-4 text-gray-600">{r.cuisines}</td>
-                  <td className="px-6 py-4 text-gray-500 text-xs truncate max-w-xs">{r.address}</td>
-                  <td className="px-6 py-4 font-semibold">⭐ {r.rating.toFixed(1)}</td>
-                  <td className="px-6 py-4">
-                    <StatusPill status={r.status} />
+                  <td className="px-6 py-4 text-gray-600">
+                    <img src={`http://127.0.0.1:8000${r.image}`} 
+                      className="h-20 w-20 rounded-xl object-cover border border-gray-100 shrink-0" />
                   </td>
+                  <td className="px-6 py-4 font-bold text-brand-dark">{r.name}</td>
                   <td className="px-6 py-4 text-right">
                     <ActionButtons
                       onEdit={() => openModal("edit-restaurant", r)}

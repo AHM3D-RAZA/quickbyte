@@ -11,15 +11,14 @@ export default function PopularDealsPanel({ deals }) {
       <div className="divide-y divide-gray-100">
         {deals.map((deal) => (
           <div
-            key={deal.id}
+            key={deal.deal__id}
             className="p-4 flex justify-between items-center hover:bg-gray-50/50 transition-colors"
           >
             <div>
-              <p className="font-bold text-brand-dark">{deal.title}</p>
-              <p className="text-xs text-gray-500 line-clamp-1">{deal.description}</p>
+              <p className="font-bold text-brand-dark">{deal.deal__name}</p>
             </div>
             <span className="text-xs font-black text-brand-orange bg-orange-50 px-2.5 py-1 rounded-full border border-orange-100 shrink-0">
-              {deal.discount_percentage}% OFF
+              ${deal.deal__combo_price} ONLY
             </span>
           </div>
         ))}

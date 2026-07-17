@@ -7,6 +7,7 @@ export default function OverviewTab({
   deliveredSales,
   activeOrdersCount,
   restaurants,
+  totalUsers,
   menuItems,
   deals,
 }) {
@@ -18,21 +19,21 @@ export default function OverviewTab({
       icon: TrendingUp,
     },
     {
-      label: "Active Orders",
+      label: "Total Orders",
       value: activeOrdersCount,
       description: "Pending processing",
       icon: ShoppingBag,
     },
     {
       label: "Partner Restaurants",
-      value: restaurants.length,
+      value: restaurants,
       description: "Locations onboarded",
       icon: Store,
     },
     {
-      label: "Menu Catalogue",
-      value: menuItems.length,
-      description: "Total registered dishes",
+      label: "Total Users",
+      value: totalUsers,
+      description: "Total registered users",
       icon: UtensilsCrossed,
     },
   ];

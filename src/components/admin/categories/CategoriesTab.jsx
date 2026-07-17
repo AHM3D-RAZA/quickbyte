@@ -7,7 +7,7 @@ export function CategoryFormModal({ isOpen, isEditing, form, onChange, onSubmit,
   if (!isOpen) return null;
 
   const handleNameChange = (val) => {
-    onChange({ name: val, slug: val.toLowerCase().replace(/[^a-z0-9]+/g, "-") });
+    onChange({ name: val });
   };
 
   return (
@@ -22,16 +22,6 @@ export function CategoryFormModal({ isOpen, isEditing, form, onChange, onSubmit,
             value={form.name}
             onChange={(e) => handleNameChange(e.target.value)}
             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-brand-orange focus:outline-none"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Slug URL</label>
-          <input
-            type="text"
-            required
-            readOnly
-            value={form.slug}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-400 focus:outline-none"
           />
         </div>
         <div className="flex justify-end gap-2 pt-2">
@@ -83,7 +73,6 @@ export default function CategoriesTab({
               <tr className="bg-gray-50 border-b border-gray-200/80 text-gray-500 font-bold text-xs uppercase tracking-wider">
                 <th className="px-6 py-4">ID</th>
                 <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">Slug</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -92,7 +81,6 @@ export default function CategoriesTab({
                 <tr key={c.id} className="hover:bg-gray-50/30 transition-colors">
                   <td className="px-6 py-4 font-mono text-gray-400">{c.id}</td>
                   <td className="px-6 py-4 font-bold text-brand-dark">{c.name}</td>
-                  <td className="px-6 py-4 font-mono text-xs text-gray-600">/{c.slug}</td>
                   <td className="px-6 py-4 text-right">
                     <ActionButtons
                       onEdit={() => openModal("edit-category", c)}

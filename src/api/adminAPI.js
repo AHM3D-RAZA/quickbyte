@@ -1,4 +1,5 @@
 import api from "./axios";
+import { buildMenuItemFormData, buildRestaurantFormData } from "../utils/createFormData";
 
 // Analytics
 export const getAnalyticsOverview = async () => {
@@ -48,6 +49,12 @@ export const updateOrderStatus = async (orderId, status) => {
 
 
 //Categories
+export const getCategories = async () => {
+    const response = await api.get("/restaurants/all-category");
+    return response.data.data;
+};
+
+
 export const createCategory = async (categoryData) => {
     const response = await api.post("/restaurants/create-category/", categoryData);
     return response.data.data;
@@ -96,7 +103,8 @@ export const editDeal = async (dealId, dealData) => {
 
 //MenuItems
 export const createMenuItem = async (menuItemData) => {
-    const response = await api.post("/restaurants/create-menuitem/", menuItemData);
+    const formData = buildMenuItemFormData(menuItemData);
+    const response = await api.post("/restaurants/create-menuitem/", formData);
     return response.data.data;
 };
 
@@ -106,14 +114,21 @@ export const deleteMenuItem = async (menuId) => {
 };
 
 export const editMenuItem = async (menuId, menuData) => {
-    const response = await api.patch(`/restaurants/update-menuitem/${menuId}/`, menuData);
+    const formData = buildMenuItemFormData(menuData);
+    const response = await api.patch(`/restaurants/update-menuitem/${menuId}/`, formData);
     return response.data.data;
 };
 
 //Restuarants
+export const getRestaurants = async () => {
+    const response = await api.get("/restaurants/all-restaurant");
+    return response.data.data;
+}
+
 export const createRestaurant = async (restaurantData) => {
+    const formData = buildRestaurantFormData(restaurantData);
     const response = await api.post(
-        "/restaurants/create-restaurant/",restaurantData);
+        "/restaurants/create-restaurant/", formData);
     return response.data.data;
 };
 
@@ -124,6 +139,7 @@ export const deleteRestaurant = async (restaurantId) => {
 };
 
 export const editRestaurant = async (restaurantId, restaurantData) => {
-    const response = await api.patch(`/restaurants/update-restaurant/${restaurantId}/`, restaurantData);
+    const formData = buildRestaurantFormData(restaurantData);
+    const response = await api.patch(`/restaurants/update-restaurant/${restaurantId}/`, formData);
     return response.data.data;
 };

@@ -11,16 +11,16 @@ export default function PopularItemsPanel({ menuItems }) {
       <div className="divide-y divide-gray-100">
         {menuItems.slice(0, 3).map((item) => (
           <div
-            key={item.id}
+            key={item.menu_item__id}
             className="p-4 flex justify-between items-center hover:bg-gray-50/50 transition-colors"
           >
             <div>
-              <p className="font-bold text-brand-dark">{item.name}</p>
+              <p className="font-bold text-brand-dark">{item.menu_item__name}</p>
               <p className="text-xs text-gray-500">
-                {item.restaurant} • {item.category}
+                {item.menu_item__restaurant_id__name}
               </p>
             </div>
-            <span className="font-bold text-brand-dark">£{item.price.toFixed(2)}</span>
+            <span className="font-bold text-brand-dark">£{item.menu_item__price.toFixed(2)}</span>
           </div>
         ))}
       </div>

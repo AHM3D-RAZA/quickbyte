@@ -15,11 +15,12 @@ export default function AdminDashboard() {
       case "overview":
         return (
           <OverviewTab
-            deliveredSales={admin.deliveredSales}
-            activeOrdersCount={admin.activeOrdersCount}
-            restaurants={admin.restaurants}
-            menuItems={admin.menuItems}
-            deals={admin.deals}
+            deliveredSales={admin.analytics.total_revenue}
+            activeOrdersCount={admin.analytics.total_orders}
+            restaurants={admin.analytics.active_restaurants}
+            totalUsers={admin.analytics.total_users}
+            menuItems={admin.popularItems}
+            deals={admin.popularDeals}
           />
         );
       case "orders":
