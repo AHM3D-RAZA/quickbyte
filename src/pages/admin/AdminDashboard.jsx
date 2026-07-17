@@ -80,6 +80,8 @@ export default function AdminDashboard() {
         return (
           <DealsTab
             deals={admin.deals}
+            restaurants={admin.restaurants}
+            menuItems={admin.menuItems}
             modalType={admin.modalType}
             selectedItem={admin.selectedItem}
             dealForm={admin.dealForm}

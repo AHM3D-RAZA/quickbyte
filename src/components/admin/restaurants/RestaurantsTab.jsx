@@ -127,7 +127,7 @@ export function RestaurantFormModal({
 }
 
 export default function RestaurantsTab({
-  restaurants,
+  restaurants = [],
   modalType,
   selectedItem,
   restaurantForm,

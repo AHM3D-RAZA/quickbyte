@@ -1,5 +1,5 @@
 import api from "./axios";
-import { buildMenuItemFormData, buildRestaurantFormData } from "../utils/createFormData";
+import { buildMenuItemFormData, buildRestaurantFormData, buildDealFormData } from "../utils/createFormData";
 
 // Analytics
 export const getAnalyticsOverview = async () => {
@@ -77,7 +77,8 @@ export const createDealItem = async (dealItemData) => {
 };
 
 export const createDeal = async (dealData) => {
-    const response = await api.post("/restaurants/create-deal/", dealData);
+    const formData = buildDealFormData(dealData);
+    const response = await api.post("/restaurants/create-deal/", formData);
     return response.data.data;
 };
 
@@ -97,7 +98,8 @@ export const editDealItem = async (itemId, itemData) => {
 };
 
 export const editDeal = async (dealId, dealData) => {
-    const response = await api.patch(`/restaurants/update-deal/${dealId}/`, dealData);
+    const formData = buildDealFormData(dealData);
+    const response = await api.patch(`/restaurants/update-deal/${dealId}/`, formData);
     return response.data.data;
 };
 

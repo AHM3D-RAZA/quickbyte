@@ -45,7 +45,7 @@ export function CategoryFormModal({ isOpen, isEditing, form, onChange, onSubmit,
 }
 
 export default function CategoriesTab({
-  categories,
+  categories = [],
   modalType,
   selectedItem,
   categoryForm,

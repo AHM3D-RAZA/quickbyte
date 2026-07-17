@@ -29,3 +29,20 @@ export const buildMenuItemFormData = (menuItem) => {
 
     return formData;
 };
+
+export const buildDealFormData = (deal) => {
+    const formData = new FormData();
+
+    formData.append("name", deal.name);
+    formData.append("description", deal.description);
+    formData.append("combo_price", deal.combo_price);
+    formData.append("restaurant", deal.restaurant);
+    formData.append("is_active", deal.is_active);
+    formData.append("is_featured", deal.is_featured);
+
+    if (deal.image instanceof File) {
+        formData.append("image", deal.image);
+    }
+
+    return formData;
+};

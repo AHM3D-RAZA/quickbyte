@@ -16,14 +16,12 @@ import {
   createDeal,
   editDeal,
   deleteDeal,
+  createDealItem,
+  editDealItem,
+  deleteDealItem,
 } from "/src/api/adminAPI";
 import { getCategories, getPopularDeals, getPopularItems, getRestaurants } from "../api/adminAPI";
-import { getMenuItems } from "../api/restaurantAPI";
-
-const INITIAL_DEALS = [
-  { id: 201, title: "Double Deal Wednesday", description: "Buy 1 Get 1 Free on all Medium Pizzas.", discount_percentage: 50, status: "Active" },
-  { id: 202, title: "Lunch Combo Box", description: "Any Burger + Fries + Drink for only £12.", discount_percentage: 15, status: "Active" },
-];
+import { getMenuItems, getDeals } from "../api/restaurantAPI";
 
 export default function useAdminState() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -35,7 +33,7 @@ export default function useAdminState() {
   const [restaurants, setRestaurants] = useState();
   const [categories, setCategories] = useState();
   const [menuItems, setMenuItems] = useState();
-  const [deals, setDeals] = useState(INITIAL_DEALS);
+  const [deals, setDeals] = useState([]);
 
   const [analytics, setAnalytics] = useState({
     total_orders: 0,
@@ -51,7 +49,16 @@ export default function useAdminState() {
   const [restaurantForm, setRestaurantForm] = useState({ name: "", description: "", address: "", image: null, is_active: true, is_featured: false });
   const [categoryForm, setCategoryForm] = useState({ name: "" });
   const [menuitemForm, setMenuitemForm] = useState({ name: "", restaurant: "", category: "", price: "", description: "", image: null });
-  const [dealForm, setDealForm] = useState({ title: "", description: "", discount_percentage: "", status: "Active" });
+  const [dealForm, setDealForm] = useState({
+    name: "",
+    description: "",
+    combo_price: "",
+    restaurant: "",
+    image: null,
+    is_active: true,
+    is_featured: false,
+    items: [], // [{ id?: <existing DealItem id>, menu_item_id, quantity }]
+  });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -135,7 +142,20 @@ export default function useAdminState() {
           setLoading(false);
         }
       };
-  
+
+  const loadDeals = async () => {
+        try {
+          setLoading(true);
+          const data = await getDeals();
+          setDeals(data);
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+
   useEffect(() => {
     Promise.all([
       loadOverview(),
@@ -143,7 +163,8 @@ export default function useAdminState() {
       loadOrders(),
       loadRestaurants(),
       loadMenuItems(),
-      loadCategories()
+      loadCategories(),
+      loadDeals()
     ]);
   }, []);
 
@@ -171,7 +192,23 @@ export default function useAdminState() {
           price: item.price || "",
           category: item.category?.id || "",
       });
-      else if (type.includes("deal")) setDealForm(item);
+      else if (type.includes("deal")) setDealForm({
+          name: item.name || "",
+          description: item.description || "",
+          combo_price: item.combo_price || "",
+          // The deal itself may not always come back with a top-level `restaurant`
+          // field depending on backend serialization, so fall back to inferring
+          // it from the restaurant on the deal's first menu item.
+          restaurant: item.restaurant?.id || item.restaurant || item.items?.[0]?.menu_item?.restaurant?.id || "",
+          image: item.image || null,
+          is_active: item.is_active ?? true,
+          is_featured: item.is_featured ?? false,
+          items: (item.items || []).map((dealItem) => ({
+            id: dealItem.id,
+            menu_item_id: dealItem.menu_item_id ?? dealItem.menu_item?.id ?? "",
+            quantity: dealItem.quantity ?? 1,
+          })),
+      });
     } else {
       setRestaurantForm({ name: "", description: "", address: "", image: null, is_active: true, is_featured: false });
       setCategoryForm({ name: "", });
@@ -183,7 +220,16 @@ export default function useAdminState() {
               description: "",
               image: null,
       });
-      setDealForm({ title: "", description: "", discount_percentage: "", status: "Active" });
+      setDealForm({
+        name: "",
+        description: "",
+        combo_price: "",
+        restaurant: "",
+        image: null,
+        is_active: true,
+        is_featured: false,
+        items: [],
+      });
     }
   };
 
@@ -305,24 +351,80 @@ export default function useAdminState() {
     }
   };
 
-  const handleDealSubmit = (e) => {
+  const handleDealSubmit = async (e) => {
     e.preventDefault();
-    const formattedDiscount = parseInt(dealForm.discount_percentage) || 0;
-    if (selectedItem) {
-      setDeals((prev) =>
-        prev.map((d) =>
-          d.id === selectedItem.id ? { ...d, ...dealForm, discount_percentage: formattedDiscount } : d
-        )
-      );
-    } else {
-      setDeals((prev) => [...prev, { id: Date.now(), ...dealForm, discount_percentage: formattedDiscount }]);
+
+    const dealPayload = {
+      name: dealForm.name,
+      description: dealForm.description,
+      combo_price: dealForm.combo_price,
+      restaurant: dealForm.restaurant,
+      image: dealForm.image,
+      is_active: dealForm.is_active,
+      is_featured: dealForm.is_featured,
+    };
+
+    try {
+      let dealId;
+      let originalItems = [];
+
+      if (selectedItem) {
+        dealId = selectedItem.id;
+        originalItems = selectedItem.items || [];
+        await editDeal(dealId, dealPayload);
+      } else {
+        const created = await createDeal(dealPayload);
+        dealId = created.id;
+      }
+
+      // Diff the item rows against what the deal originally had:
+      // anything that existed before but isn't in the form anymore gets deleted.
+      const originalItemIds = originalItems.map((oi) => oi.id);
+      const formItemIds = dealForm.items.filter((it) => it.id).map((it) => it.id);
+      const removedItemIds = originalItemIds.filter((id) => !formItemIds.includes(id));
+
+      for (const itemId of removedItemIds) {
+        await deleteDealItem(itemId);
+      }
+
+      // Rows still in the form: update the ones that already existed,
+      // create the ones that are brand new (no id yet).
+      for (const row of dealForm.items) {
+        if (!row.menu_item_id || !row.quantity) continue; // skip incomplete rows
+
+        if (row.id) {
+          await editDealItem(row.id, {
+            deal_id: dealId,
+            menu_item_id: row.menu_item_id,
+            quantity: row.quantity,
+          });
+        } else {
+          await createDealItem({
+            deal_id: dealId,
+            menu_item_id: row.menu_item_id,
+            quantity: row.quantity,
+          });
+        }
+      }
+
+      await loadDeals();
+      closeModal();
+    } catch (err) {
+      console.error(err);
+      console.log(err.response?.data);
+      alert("Failed to save the deal. Please check the form and try again.");
     }
-    closeModal();
   };
 
-  const handleDeleteDeal = (id) => {
+  const handleDeleteDeal = async (id) => {
     if (window.confirm("Are you sure you want to delete this deal?")) {
-      setDeals((prev) => prev.filter((d) => d.id !== id));
+      try {
+        await deleteDeal(id);
+        await loadDeals();
+      } catch (err) {
+        console.error(err);
+        alert("Failed to delete the deal!");
+      }
     }
   };
 
@@ -331,11 +433,16 @@ export default function useAdminState() {
     setSearchQuery("");
   };
 
+  const activeOrdersCount = orders.filter((order) =>
+    ACTIVE_ORDER_STATUSES.includes(order.current_status)
+  ).length;
+
   return {
     activeTab,
     setActiveTab,
     handleTabChange,
     orders,
+    activeOrdersCount,
     analytics,
     popularItems,
     popularDeals,
