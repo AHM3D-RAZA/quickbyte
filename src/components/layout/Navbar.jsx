@@ -14,8 +14,8 @@ import { getRestaurants } from "/src/api/restaurantAPI";
 
 const navLinks = [
   { label: "Home", path: "/" },
-  { label: "Browse Menu", path: "/#menu" },
-  { label: "Special Offers", path: "/offers" },
+  { label: "Browse Menu", path: "/#categories" },
+  { label: "Special Offers", path: "/#deals" },
   { label: "Restaurants", path: "/restaurant" },
   { label: "Track Order", path: "/orders/track" },
 ];
@@ -165,7 +165,16 @@ const Navbar = () => {
                   <HashLink
                     key={link.label}
                     smooth
-                    to="/#menu"
+                    to="/#categories"
+                    className="w-[127px] h-[45px] text-brand-dark hover:text-brand-orange flex items-center justify-center transition-colors duration-200"
+                  >
+                    {link.label}
+                  </HashLink>
+                ) : link.label === "Special Offers" ? (
+                  <HashLink
+                    key={link.label}
+                    smooth
+                    to="/#deals"
                     className="w-[127px] h-[45px] text-brand-dark hover:text-brand-orange flex items-center justify-center transition-colors duration-200"
                   >
                     {link.label}
@@ -328,7 +337,17 @@ const Navbar = () => {
                 <HashLink
                   key={link.label}
                   smooth
-                  to="/#menu"
+                  to="/#categories"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-brand-dark font-medium"
+                >
+                  {link.label}
+                </HashLink>
+              ) : link.label === "Special Offers" ? (
+                <HashLink
+                  key={link.label}
+                  smooth
+                  to="/#deals"
                   onClick={() => setMenuOpen(false)}
                   className="text-brand-dark font-medium"
                 >

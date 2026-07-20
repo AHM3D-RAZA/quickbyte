@@ -16,12 +16,12 @@ export default function CheckoutDetails() {
   const [orderError, setOrderError] = useState(null);
 
   const [form, setForm] = useState({
-    street: "123 Regent Street",
-    apartment: "Apt 4B",
-    city: "London",
-    postcode: "W1B 5AH",
-    cardName: "John Doe",
-    cardNumber: "4111 2222 3333 4444",
+    street: "",
+    apartment: "",
+    city: "",
+    postcode: "",
+    cardName: "",
+    cardNumber: "",
   });
 
   const paymentMethodMap = {
@@ -98,6 +98,7 @@ export default function CheckoutDetails() {
                   value={form.street}
                   onChange={handleInputChange}
                   required
+                  placeholder="123 Regent Street"
                   className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
                 />
               </div>
@@ -111,6 +112,7 @@ export default function CheckoutDetails() {
                   name="apartment"
                   value={form.apartment}
                   onChange={handleInputChange}
+                  placeholder="Apt 4B"
                   className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
                 />
               </div>
@@ -125,6 +127,7 @@ export default function CheckoutDetails() {
                   value={form.city}
                   onChange={handleInputChange}
                   required
+                  placeholder="London"
                   className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
                 />
               </div>
@@ -139,6 +142,7 @@ export default function CheckoutDetails() {
                   value={form.postcode}
                   onChange={handleInputChange}
                   required
+                  placeholder="W1B 5AH"
                   className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
                 />
               </div>
@@ -187,6 +191,7 @@ export default function CheckoutDetails() {
                     value={form.cardNumber}
                     onChange={handleInputChange}
                     required={paymentMethod === "card"}
+                    placeholder="4111 2222 3333 4444"
                     className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-brand-orange focus:outline-none"
                   />
                 </div>
@@ -251,12 +256,18 @@ export default function CheckoutDetails() {
 
               <button
                 type="submit"
-                disabled={cartItems.length === 0}
+                disabled={cartItems.length === 0 || isPlacingOrder}
                 className="mt-6 w-full rounded-xl bg-brand-orange py-4 text-center font-bold text-white shadow-lg hover:bg-brand-orange/95 hover:shadow-xl transition-all flex items-center justify-center gap-2 transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Place Order
+                {isPlacingOrder ? "Placing Order..." : "Place Order"}
                 <Send className="w-4 h-4" />
               </button>
+
+              {orderError && (
+                <p className="mt-3 rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm font-semibold text-red-600 text-center">
+                  {orderError}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -300,7 +311,7 @@ export default function CheckoutDetails() {
                 Continue Shopping
               </button>
               <button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/orders/track")}
                 className="w-full rounded-xl bg-gray-100 py-3.5 font-bold text-brand-dark hover:bg-gray-200 transition-all"
               >
                 Track Live Order

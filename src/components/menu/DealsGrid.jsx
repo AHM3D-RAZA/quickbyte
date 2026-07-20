@@ -4,26 +4,16 @@ import DealCard from "./DealCard";
 import { getDeals } from "/src/api/restaurantAPI";
 import { useNavigate } from "react-router-dom";
 
-const tabs = [
-  "Vegan",
-  "Sushi",
-  "Pizza & Fast Food",
-  "Others",
-];
-
 function DealsGrid() {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState("All");
   const [deals, setDeals] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-
     const fetchDeals = async () => {
       try {
         const data = await getDeals();
-        // console.log(Array.isArray(data)); // true or false
-        console.log(data);
-        setDeals(data);
+        setDeals(data || []);
       } catch (error) {
         console.error(error);
       }
@@ -32,8 +22,22 @@ function DealsGrid() {
     fetchDeals();
   }, []);
 
+  // Build the tab list from whatever categories actually show up
+  // across the items in the deals we got back, instead of a fixed list.
+  const categoryNames = deals
+    .flatMap((deal) => deal.items || [])
+    .map((item) => item.menu_item?.category?.name)
+    .filter(Boolean);
+  const tabs = ["All", ...new Set(categoryNames)];
 
-  console.log(deals);
+  // A deal matches a category if any of its items belong to it.
+  const visibleDeals =
+    activeTab === "All"
+      ? deals
+      : deals.filter((deal) =>
+          deal.items?.some((item) => item.menu_item?.category?.name === activeTab)
+        );
+
   return (
     <section className="px-6 py-8">
       <div className="flex items-center">
@@ -44,20 +48,20 @@ function DealsGrid() {
         {/* Mobile: dropdown */}
         <select
           value={activeTab}
-          onChange={(e) => setActiveTab(Number(e.target.value))}
+          onChange={(e) => setActiveTab(e.target.value)}
           className="lg:hidden ml-auto mb-4 border border-orange-500 rounded-full px-4 py-2 text-sm font-medium text-black bg-white"
         >
-          {tabs.map((tab, index) => (
-            <option key={tab} value={index}>{tab}</option>
+          {tabs.map((tab) => (
+            <option key={tab} value={tab}>{tab}</option>
           ))}
         </select>
 
         <nav className="hidden lg:flex flex-wrap justify-end gap-1 mb-4 ml-auto">
-          {tabs.map((tab, index) => (
+          {tabs.map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(index)}
-              className={`px-4 sm:px-6 py-2 rounded-full transition-all duration-300 text-xs sm:text-sm md:text-base whitespace-nowrap cursor-pointer ${activeTab === index
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 sm:px-6 py-2 rounded-full transition-all duration-300 text-xs sm:text-sm md:text-base whitespace-nowrap cursor-pointer ${activeTab === tab
                   ? "border border-orange-500 bg-white font-bold text-black"
                   : "border border-transparent font-medium text-gray-700 hover:bg-black/5 hover:text-black"
                 }`}
@@ -68,9 +72,13 @@ function DealsGrid() {
         </nav>
       </div>
 
+      {visibleDeals.length === 0 && (
+        <p className="text-sm text-gray-500 py-6">No deals in this category yet.</p>
+      )}
+
       {/* Mobile: horizontal sliding row */}
       <div className="flex lg:hidden gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2">
-        {deals.map((deal) => (
+        {visibleDeals.map((deal) => (
           <DealCard key={deal.id} image={`http://127.0.0.1:8000${deal.image}`} name={deal.name}
             restaurantLabel={deal.items?.[0]?.menu_item?.restaurant?.name || "Unknown Restaurant"}
             discount={`\$${deal.combo_price}`} onClick={() => navigate(`/deal/${deal.id}`)} />
@@ -79,7 +87,7 @@ function DealsGrid() {
 
       {/* Desktop: 3-column grid */}
       <div className="hidden lg:grid grid-cols-3 gap-5">
-        {deals.map((deal) => (
+        {visibleDeals.map((deal) => (
           <DealCard key={deal.id} image={`http://127.0.0.1:8000${deal.image}`} name={deal.name}
             restaurantLabel={deal.items?.[0]?.menu_item?.restaurant?.name || "Unknown Restaurant"}
             discount={`\$${deal.combo_price}`} onClick={() => navigate(`/deal/${deal.id}`)} />

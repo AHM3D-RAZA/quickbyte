@@ -18,6 +18,7 @@ const RestaurantDetails = () => {
   const { restaurantId } = useParams();
   const [activeCategory, setActiveCategory] = useState("Offers");
   const [restaurant, setRestaurant] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -40,10 +41,14 @@ const RestaurantDetails = () => {
       <RestaurantHero restaurant={restaurant?.name || "Restaurant"} description={restaurant?.description || "No description available"} />
 
       <div className="space-y-6 p-6 mx-6 lg:mx-16">
-        <RestaurantOffersHeader restaurantName={restaurant?.name || "Restaurant"} />
+        <RestaurantOffersHeader
+          restaurantName={restaurant?.name || "Restaurant"}
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
       </div>
       <OfferCategoryTabs activeCategory={activeCategory} onSelect={setActiveCategory} restaurantId={restaurantId} />
-      <OffersGrid onAddOffer={(offer) => console.log(`Added offer: ${offer.title}`)} restaurantId={restaurantId} />
+      <OffersGrid onAddOffer={(offer) => console.log(`Added offer: ${offer.title}`)} restaurantId={restaurantId} searchQuery={searchQuery} />
 
       <RenderRestaurant restaurantId={restaurantId} />
       <Location />

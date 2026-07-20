@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { addItemToCart } from "../../redux/cartSlice";
 
-function OffersGrid({ restaurantId }) {
+function OffersGrid({ restaurantId, searchQuery = "" }) {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
   const { openLogin } = useAuthModal();
@@ -25,9 +25,12 @@ function OffersGrid({ restaurantId }) {
     fetchOffers();
   }, [restaurantId]);
 
-  const filteredOffers = offers.filter(
-    item => item?.items?.[0]?.menu_item?.restaurant?.id == restaurantId
-  );
+  const filteredOffers = offers
+    .filter(item => item?.items?.[0]?.menu_item?.restaurant?.id == restaurantId)
+    .filter(item =>
+      searchQuery.trim() === "" ||
+      item.name?.toLowerCase().includes(searchQuery.trim().toLowerCase())
+    );
 
   const handleAddToCard = (item) => {
     if (!user) {
@@ -40,6 +43,11 @@ function OffersGrid({ restaurantId }) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:px-20 lg:py-20 px-6 py-6">
+      {filteredOffers.length === 0 && (
+        <p className="col-span-full text-sm text-gray-500 py-6">
+          {searchQuery.trim() ? "No offers match your search." : "No offers available right now."}
+        </p>
+      )}
       {filteredOffers.map((offer) => (
         <OfferCard
           key={offer.id}

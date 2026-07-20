@@ -171,7 +171,6 @@ export default function useAdminState() {
   const openModal = (type, item = null) => {
     setModalType(type);
     setSelectedItem(item);
-    console.log('eh', item);
     if (item) {
       if (type.includes("restaurant")) setRestaurantForm({
           name: item.name || "",

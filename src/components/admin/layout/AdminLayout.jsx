@@ -10,7 +10,7 @@ export default function AdminLayout({ activeTab, onTabChange, activeOrdersCount,
         activeOrdersCount={activeOrdersCount}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto md:ml-64">
         <AdminHeader activeTab={activeTab} />
         <main className="p-6 max-w-7xl w-full mx-auto space-y-6">{children}</main>
       </div>

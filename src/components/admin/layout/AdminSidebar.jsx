@@ -6,7 +6,7 @@ export default function AdminSidebar({ activeTab, onTabChange, activeOrdersCount
   const navigate = useNavigate();
 
   return (
-    <aside className="bg-brand-dark text-white w-64 flex-shrink-0 hidden md:flex flex-col border-r border-black/20">
+    <aside className="bg-brand-dark text-white w-64 hidden md:flex flex-col border-r border-black/20 fixed top-0 left-0 h-screen overflow-hidden">
       <div className="p-6 border-b border-white/5 flex items-center justify-between">
         <Link to="/" className="text-2xl font-black text-brand-orange tracking-tight">
           QuickByte
@@ -50,7 +50,7 @@ export default function AdminSidebar({ activeTab, onTabChange, activeOrdersCount
         })}
       </nav>
 
-      <div className="p-4 border-t border-white/5">
+      <div className="p-4 border-t border-white/5 shrink-0">
         <button
           onClick={() => navigate("/")}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-300 hover:bg-white/5 hover:text-white transition-all"

@@ -39,7 +39,7 @@ export default function DealDetailPage() {
   }
 
   const dealData = {
-    id: deal.id,          // required for unique cart identification
+    id: deal.id,
 
     name: deal.name,
 
