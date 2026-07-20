@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { ACTIVE_ORDER_STATUSES } from "../components/admin/constants";
 import {
   getAnalyticsOverview,
+  getOrderStatusAnalytics,
+  getRevenueByRestaurant,
+  getRevenueOverTime,
   getAllOrders,
   updateOrderStatus,
   createRestaurant,
@@ -42,6 +45,12 @@ export default function useAdminState() {
     total_users: 0,
   });
 
+  const [orderStatusData, setOrderStatusData] = useState([]);
+  const [revenueByRestaurant, setRevenueByRestaurant] = useState([]);
+  const [revenueOverTime, setRevenueOverTime] = useState([]);
+  const [revenueRange, setRevenueRange] = useState("weekly");
+  const [revenueOverTimeLoading, setRevenueOverTimeLoading] = useState(true);
+
   const [modalType, setModalType] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -75,6 +84,44 @@ export default function useAdminState() {
           setLoading(false);
         }
       };
+
+  const loadOrderStatusData = async () => {
+        try {
+          const data = await getOrderStatusAnalytics();
+          setOrderStatusData(data);
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        }
+      };
+
+  const loadRevenueByRestaurant = async () => {
+        try {
+          const data = await getRevenueByRestaurant();
+          setRevenueByRestaurant(data);
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        }
+      };
+
+  const loadRevenueOverTime = async (range = revenueRange) => {
+        try {
+          setRevenueOverTimeLoading(true);
+          const data = await getRevenueOverTime(range);
+          setRevenueOverTime(data);
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        } finally {
+          setRevenueOverTimeLoading(false);
+        }
+      };
+
+  const handleRevenueRangeChange = (range) => {
+    setRevenueRange(range);
+    loadRevenueOverTime(range);
+  };
 
   const loadPopularItemsAndDeals = async () => {
         try {
@@ -159,6 +206,9 @@ export default function useAdminState() {
   useEffect(() => {
     Promise.all([
       loadOverview(),
+      loadOrderStatusData(),
+      loadRevenueByRestaurant(),
+      loadRevenueOverTime(),
       loadPopularItemsAndDeals(),
       loadOrders(),
       loadRestaurants(),
@@ -443,6 +493,12 @@ export default function useAdminState() {
     orders,
     activeOrdersCount,
     analytics,
+    orderStatusData,
+    revenueByRestaurant,
+    revenueOverTime,
+    revenueRange,
+    revenueOverTimeLoading,
+    handleRevenueRangeChange,
     popularItems,
     popularDeals,
     restaurants,

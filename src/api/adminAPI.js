@@ -17,8 +17,10 @@ export const getRevenueByRestaurant = async () => {
     return response.data.data;
 };
 
-export const getRevenueOverTime = async () => {
-    const response = await api.get("/order/admin/analytics/revenue-over-time/");
+export const getRevenueOverTime = async (range = "weekly") => {
+    const response = await api.get("/order/admin/analytics/revenue-over-time/", {
+        params: { range },
+    });
     return response.data.data;
 };
 

@@ -1,6 +1,7 @@
 import useAdminState from "../../hooks/useAdminState";
 import AdminLayout from "../../components/admin/layout/AdminLayout";
 import OverviewTab from "../../components/admin/overview/OverviewTab";
+import AnalyticsTab from "../../components/admin/analytics/AnalyticsTab";
 import OrdersTab from "../../components/admin/orders/OrdersTab";
 import RestaurantsTab from "../../components/admin/restaurants/RestaurantsTab";
 import MenuTab from "../../components/admin/menu/MenuTab";
@@ -21,6 +22,17 @@ export default function AdminDashboard() {
             totalUsers={admin.analytics.total_users}
             menuItems={admin.popularItems}
             deals={admin.popularDeals}
+          />
+        );
+      case "analytics":
+        return (
+          <AnalyticsTab
+            orderStatusData={admin.orderStatusData}
+            revenueByRestaurant={admin.revenueByRestaurant}
+            revenueOverTime={admin.revenueOverTime}
+            revenueRange={admin.revenueRange}
+            onRevenueRangeChange={admin.handleRevenueRangeChange}
+            revenueOverTimeLoading={admin.revenueOverTimeLoading}
           />
         );
       case "orders":
