@@ -13,7 +13,6 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <ThemeProvider>
         <AuthModalProvider>
-          console.log("API URL:", import.meta.env.VITE_API_URL);
           <App />
         </AuthModalProvider>
       </ThemeProvider>
