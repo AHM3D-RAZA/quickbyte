@@ -5,7 +5,7 @@ import backgroundImage from "/src/assets/Group 23.png";
 import backgroundDarkImage from "/src/assets/Group 23 Dark.png";
 
 import burgerImage from "/src/assets/Rectangle 44.png";
-import reviewImage from "/src/assets/Rectangle review.png";
+import reviewImage from "/src/assets/Rectangle Review.png";
 import Motocross from "/src/assets/Motocross.png";
 import OrderComplete from "/src/assets/Order Completed.png";
 
