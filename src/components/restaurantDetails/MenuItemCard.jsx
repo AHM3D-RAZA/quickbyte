@@ -3,6 +3,7 @@ import { useTheme } from "/src/context/ThemeContext";
 function MenuItemCard({ item, onAdd }) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
+    const BASE_URL = import.meta.env.VITE_API_URL;
 
     return (
         <div
@@ -12,7 +13,7 @@ function MenuItemCard({ item, onAdd }) {
             <img
                 src={
                     item.image
-                        ? `http://127.0.0.1:8000${item.image}`
+                        ? `${BASE_URL}${item.image}`
                         : "/src/assets/placeholder-food.png"
                 }
                 alt={item.name}

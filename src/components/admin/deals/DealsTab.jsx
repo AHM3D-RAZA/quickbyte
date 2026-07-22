@@ -15,6 +15,7 @@ export function DealFormModal({
   onClose,
 }) {
   if (!isOpen) return null;
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   // Only let a deal be built from menu items belonging to the deal's own restaurant.
   const itemsForSelectedRestaurant = menuItems.filter(
@@ -263,7 +264,7 @@ export default function DealsTab({
                   <td className="px-6 py-4">
                     {d.image ? (
                       <img
-                        src={`http://127.0.0.1:8000${d.image}`}
+                        src={`${BASE_URL}${d.image}`}
                         className="h-16 w-16 rounded-xl object-cover border border-gray-100 shrink-0"
                       />
                     ) : (

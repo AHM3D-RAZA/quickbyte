@@ -2,6 +2,7 @@ export default function OrderItems({ items = [] }) {
   if (!items.length) {
     return <p className="text-gray-500 italic">No items found.</p>;
   }
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   return (
     <div className="space-y-4">
@@ -12,7 +13,7 @@ export default function OrderItems({ items = [] }) {
               item.image
                 ? item.image.startsWith("http")
                   ? item.image
-                  : `http://127.0.0.1:8000${item.image}`
+                  : `${BASE_URL}${item.image}`
                 : "https://via.placeholder.com/80"
             }
             alt={item.name}

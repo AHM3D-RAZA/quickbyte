@@ -8,6 +8,7 @@ function DealsGrid() {
   const [activeTab, setActiveTab] = useState("All");
   const [deals, setDeals] = useState([]);
   const navigate = useNavigate();
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchDeals = async () => {
@@ -79,7 +80,7 @@ function DealsGrid() {
       {/* Mobile: horizontal sliding row */}
       <div className="flex lg:hidden gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2">
         {visibleDeals.map((deal) => (
-          <DealCard key={deal.id} image={`http://127.0.0.1:8000${deal.image}`} name={deal.name}
+          <DealCard key={deal.id} image={`${BASE_URL}${deal.image}`} name={deal.name}
             restaurantLabel={deal.items?.[0]?.menu_item?.restaurant?.name || "Unknown Restaurant"}
             discount={`\$${deal.combo_price}`} onClick={() => navigate(`/deal/${deal.id}`)} />
         ))}
@@ -88,7 +89,7 @@ function DealsGrid() {
       {/* Desktop: 3-column grid */}
       <div className="hidden lg:grid grid-cols-3 gap-5">
         {visibleDeals.map((deal) => (
-          <DealCard key={deal.id} image={`http://127.0.0.1:8000${deal.image}`} name={deal.name}
+          <DealCard key={deal.id} image={`${BASE_URL}${deal.image}`} name={deal.name}
             restaurantLabel={deal.items?.[0]?.menu_item?.restaurant?.name || "Unknown Restaurant"}
             discount={`\$${deal.combo_price}`} onClick={() => navigate(`/deal/${deal.id}`)} />
         ))}

@@ -33,9 +33,9 @@ export default function useAdminState() {
 
   const [orders, setOrders] = useState([]);
 
-  const [restaurants, setRestaurants] = useState();
-  const [categories, setCategories] = useState();
-  const [menuItems, setMenuItems] = useState();
+  const [restaurants, setRestaurants] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [menuItems, setMenuItems] = useState([]);
   const [deals, setDeals] = useState([]);
 
   const [analytics, setAnalytics] = useState({

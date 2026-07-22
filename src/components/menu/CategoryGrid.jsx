@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 function CategoryGrid() {
   const [menuItems, setMenuItems] = useState([]);
   const navigate = useNavigate();
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -52,7 +53,7 @@ function CategoryGrid() {
             key={menuItem.category.id}
             image={
               menuItem.image
-                ? `http://127.0.0.1:8000${menuItem.image}`
+                ? `${BASE_URL}${menuItem.image}`
                 : "/src/assets/category-placeholder.png"
             }
             name={menuItem.category.name}

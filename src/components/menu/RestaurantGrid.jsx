@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 function RestaurantGrid({ type }) {
   const navigate = useNavigate();
   const [restaurants, setRestaurants] = useState([]);
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
 
@@ -31,8 +32,8 @@ function RestaurantGrid({ type }) {
       {/* Mobile: sliding row */}
       <div className="flex lg:hidden gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2">
         {restaurants.map((r) => (
-          <div key={r.id} className="flex-shrink-0 w-[160px] snap-start">
-            <RestaurantCard {...r} image={`http://127.0.0.1:8000${r.image}`}
+          <div key={r.id} className="shrink-0 w-40 snap-start">
+            <RestaurantCard {...r} image={`${BASE_URL}${r.image}`}
              onClick={() => navigate(`/restaurant/${r.id}`)} />
           </div>
         ))}
@@ -41,7 +42,7 @@ function RestaurantGrid({ type }) {
       {/* Desktop: unchanged grid */}
       <div className="hidden lg:grid grid-cols-6 gap-5">
         {restaurants.map((r) => (
-          <RestaurantCard key={r.id} {...r} image={`http://127.0.0.1:8000${r.image}`}
+          <RestaurantCard key={r.id} {...r} image={`${BASE_URL}${r.image}`}
            onClick={() => navigate(`/restaurant/${r.id}`)} />
         ))}
       </div>

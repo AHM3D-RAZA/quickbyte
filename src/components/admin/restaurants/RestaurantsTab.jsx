@@ -13,6 +13,7 @@ export function RestaurantFormModal({
   onClose,
 }) {
   if (!isOpen) return null;
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   return (
     <AdminModal
@@ -162,7 +163,7 @@ export default function RestaurantsTab({
               {restaurants.map((r) => (
                 <tr key={r.id} className="hover:bg-gray-50/30 transition-colors">
                   <td className="px-6 py-4 text-gray-600">
-                    <img src={`http://127.0.0.1:8000${r.image}`} 
+                    <img src={`${BASE_URL}${r.image}`} 
                       className="h-20 w-20 rounded-xl object-cover border border-gray-100 shrink-0" />
                   </td>
                   <td className="px-6 py-4 font-bold text-brand-dark">{r.name}</td>

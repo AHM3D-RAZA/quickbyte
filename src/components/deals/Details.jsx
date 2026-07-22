@@ -15,6 +15,7 @@ export default function DealDetailPage() {
   const dispatch = useDispatch();
   const [deal, setDeal] = useState(null);
   const { openLogin } = useAuthModal();
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchDeal = async () => {
@@ -61,7 +62,7 @@ export default function DealDetailPage() {
 
     savings: 0,
 
-    image: `http://127.0.0.1:8000${deal.image}`,
+    image: `${BASE_URL}${deal.image}`,
   };
 
   const handleAddToCard = (item) => {
@@ -99,7 +100,7 @@ export default function DealDetailPage() {
               className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
             >
               <img
-                src={`http://127.0.0.1:8000${item.menu_item.image}`}
+                src={`${BASE_URL}${item.menu_item.image}`}
                 alt={item.menu_item.name}
                 className="w-20 h-20 rounded-xl object-cover"
               />

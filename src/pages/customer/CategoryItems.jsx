@@ -13,6 +13,7 @@ const CategoryItems = () => {
   const user = useSelector(state => state.auth.user);
   const { openLogin } = useAuthModal();
   const dispatch = useDispatch();
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -77,7 +78,7 @@ const CategoryItems = () => {
               >
                 {item.image && (
                   <img
-                    src={`http://127.0.0.1:8000${item.image}`}
+                    src={`${BASE_URL}${item.image}`}
                     alt={item.name}
                     className="w-full h-[180px] object-cover"
                   />

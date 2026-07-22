@@ -54,7 +54,7 @@ function OffersGrid({ restaurantId, searchQuery = "" }) {
           restaurantLabel={offer.items[0].menu_item.restaurant.name}
           title={offer.name}
           discount={`$${offer.combo_price}`}
-          image={offer.image ? `http://localhost:8000${offer.image}` : "/src/assets/offer3.png"}
+          image={offer.image ? `${import.meta.env.VITE_API_URL}${offer.image}` : "/src/assets/offer3.png"}
           onAdd={() => handleAddToCard(offer)}
           onSelect={() => navigate(`/deal/${offer.id}`)}
         />

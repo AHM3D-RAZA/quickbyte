@@ -14,6 +14,7 @@ export function MenuItemFormModal({
   onClose,
 }) {
   if (!isOpen) return null;
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   return (
     <AdminModal
@@ -155,7 +156,7 @@ export function MenuItemFormModal({
 
           {isEditing && form.image && typeof form.image === "string" && (
             <img
-              src={`http://127.0.0.1:8000${form.image}`}
+              src={`${BASE_URL}${form.image}`}
               alt="Menu Item"
               className="mt-3 h-24 w-24 rounded-lg object-cover border"
             />
